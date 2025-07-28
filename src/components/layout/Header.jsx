@@ -147,7 +147,7 @@ export const Header = ({ onAuthModalOpen }) => {
           <Link to={ROUTES.HOME} className="-m-1.5 p-1.5 flex items-center justify-start w-[160px] h-14">
             <img 
               src={theme === 'dark' ? '/assets/header-logo-2-dark.webp' : '/assets/header-logo-2-light.webp'} 
-              alt="TrakTick" 
+              alt="tractick" 
               className="h-12 w-auto object-contain max-w-full"
             />
           </Link>
@@ -333,7 +333,7 @@ export const Header = ({ onAuthModalOpen }) => {
               <Link to={ROUTES.HOME} className="-m-1.5 p-1.5 flex items-center justify-start w-[120px] h-8">
                 <img 
                   src={theme === 'dark' ? '/assets/header-logo-2-dark.webp' : '/assets/header-logo-2-light.webp'} 
-                  alt="TrakTick" 
+                  alt="tractick" 
                   className="h-8 w-auto object-contain max-w-full"
                 />
               </Link>

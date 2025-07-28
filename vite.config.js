@@ -42,8 +42,8 @@ export default defineConfig(({ mode }) => {
           ]
         },
         manifest: {
-          name: 'traktick - time zones made simple',
-          short_name: 'traktick',
+          name: 'tractick - time zones made simple',
+          short_name: 'tractick',
           description: 'A straightforward clock app designed to help you keep track of time with ease.',
           theme_color: '#d90c00',
           background_color: '#ffffff',

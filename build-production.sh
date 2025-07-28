@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Production Build Script for traktick
+# Production Build Script for tractick
 echo "🚀 Starting production build..."
 
 # Clean previous builds

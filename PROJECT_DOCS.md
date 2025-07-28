@@ -1,4 +1,4 @@
-# TrakTick PWA - Complete Project Documentation
+# tractick PWA - Complete Project Documentation
 
 ## 📋 Table of Contents
 
@@ -21,7 +21,7 @@ This guide provides step-by-step instructions to achieve a perfect 100/100 PWA a
 ## Prerequisites
 
 - Chrome browser with DevTools
-- TrakTick PWA running locally or deployed
+- tractick PWA running locally or deployed
 - Basic understanding of PWA concepts
 
 ## Testing Steps
@@ -286,7 +286,7 @@ caches.keys().then(keys => console.log(keys))
 
 ## Quick Start
 
-The TrakTick PWA is now **production-ready** with comprehensive PWA best practices implemented for iOS, Android, and Windows platforms.
+The tractick PWA is now **production-ready** with comprehensive PWA best practices implemented for iOS, Android, and Windows platforms.
 
 ## 📦 Build Output
 
@@ -463,7 +463,7 @@ VITE_OPENWEATHER_API_KEY=your_openweather_api_key
 
 ## Overview
 
-The custom title bar (showing "traktick" and timestamp) now only appears when the app is installed as a PWA (Progressive Web App) and running in standalone mode.
+The custom title bar (showing "tractick" and timestamp) now only appears when the app is installed as a PWA (Progressive Web App) and running in standalone mode.
 
 ## Behavior
 
@@ -474,7 +474,7 @@ The custom title bar (showing "traktick" and timestamp) now only appears when th
 
 ### PWA (Installed App)
 - **Title bar is shown** when the app is installed as a PWA
-- Displays "traktick" branding and current timestamp
+- Displays "tractick" branding and current timestamp
 - Includes window controls (minimize, maximize, close) when supported
 - Provides a native app-like experience
 
@@ -581,7 +581,7 @@ Header always set Referrer-Policy "strict-origin-when-cross-origin"
 server {
     listen 80;
     server_name your-domain.com;
-    root /var/www/traktick/dist;
+    root /var/www/tractick/dist;
     index index.html;
 
     # PWA Routes
@@ -764,14 +764,14 @@ const PAGE_TITLES = {
 
 ### 2. Title Format
 
-- **Home page**: `traktick - time zones made simple`
-- **Other pages**: `{PageName} | traktick`
+- **Home page**: `tractick - time zones made simple`
+- **Other pages**: `{PageName} | tractick`
 
 Examples:
-- Home: `traktick - time zones made simple`
-- Weather: `Weather | traktick`
-- Stopwatch: `Stopwatch | traktick`
-- World Clock: `World Clock | traktick`
+- Home: `tractick - time zones made simple`
+- Weather: `Weather | tractick`
+- Stopwatch: `Stopwatch | tractick`
+- World Clock: `World Clock | tractick`
 
 ### 3. Implementation
 
@@ -806,7 +806,7 @@ export const MyNewPage = () => {
 To add a new route with a custom page title:
 
 1. Add the route to the `PAGE_TITLES` mapping in `src/hooks/usePageTitle.js`
-2. The title will automatically be formatted as `{PageName} | traktick`
+2. The title will automatically be formatted as `{PageName} | tractick`
 
 ## Files Modified
 

@@ -1,15 +1,15 @@
-// Protocol handler utility for traktick:// URLs
+// Protocol handler utility for tractick:// URLs
 import { ROUTES } from '../constants'
 
 /**
- * Parse a traktick protocol URL and return navigation info
- * @param {string} protocolUrl - The full protocol URL (e.g., "web+traktick://timer/5min")
+ * Parse a tractick protocol URL and return navigation info
+ * @param {string} protocolUrl - The full protocol URL (e.g., "web+tractick://timer/5min")
  * @returns {Object} Navigation object with route and params
  */
 export function parseProtocolUrl(protocolUrl) {
   try {
     // Remove the protocol prefix
-    const url = protocolUrl.replace('web+traktick://', '')
+    const url = protocolUrl.replace('web+tractick://', '')
     
     // Split by '/' to get parts
     const parts = url.split('/').filter(Boolean)
@@ -125,10 +125,10 @@ export function parseDuration(duration) {
  * Generate protocol URL examples
  */
 export const PROTOCOL_EXAMPLES = {
-  timer: 'web+traktick://timer/5min',
-  stopwatch: 'web+traktick://stopwatch',
-  worldClock: 'web+traktick://world-clock/UTC',
-  converter: 'web+traktick://converter',
-  screensaver: 'web+traktick://screensaver',
-  home: 'web+traktick://home'
+  timer: 'web+tractick://timer/5min',
+  stopwatch: 'web+tractick://stopwatch',
+  worldClock: 'web+tractick://world-clock/UTC',
+  converter: 'web+tractick://converter',
+  screensaver: 'web+tractick://screensaver',
+  home: 'web+tractick://home'
 } 

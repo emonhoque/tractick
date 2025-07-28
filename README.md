@@ -1,11 +1,11 @@
-# 🕐 TrakTick - Time Management App
+# 🕐 tractick - Time Management App
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/yourusername/traktick)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/yourusername/traktick)
-[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/yourusername/traktick/blob/main/LICENSE)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/yourusername/tractick)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/yourusername/tractick)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/yourusername/tractick/blob/main/LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-ready-orange)](https://web.dev/progressive-web-apps/)
 
-A comprehensive time management and tracking solution built with React, Vite, and Firebase. TrakTick helps you keep track of time with ease through world clocks, timers, stopwatches, and productivity tracking.
+A comprehensive time management and tracking solution built with React, Vite, and Firebase. tractick helps you keep track of time with ease through world clocks, timers, stopwatches, and productivity tracking.
 
 ## ✨ Features
 
@@ -138,8 +138,8 @@ A comprehensive time management and tracking solution built with React, Vite, an
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/traktick.git
-   cd traktick
+   git clone https://github.com/yourusername/tractick.git
+   cd tractick
    ```
 
 2. **Install dependencies:**
@@ -179,7 +179,7 @@ A comprehensive time management and tracking solution built with React, Vite, an
 ## 🏗️ Project Structure
 
 ```
-traktick/
+tractick/
 ├── src/
 │   ├── components/          # React components
 │   │   ├── common/         # Shared components (LoadingSpinner, ErrorBoundary, etc.)
@@ -423,7 +423,7 @@ npm run build
 
 ## 📱 PWA Features
 
-TrakTick is a Progressive Web App with the following features:
+tractick is a Progressive Web App with the following features:
 
 - **Installable** on desktop and mobile devices
 - **Offline functionality** for basic features
@@ -433,7 +433,7 @@ TrakTick is a Progressive Web App with the following features:
 
 ### Installing as PWA
 
-1. Open TrakTick in Chrome/Edge
+1. Open tractick in Chrome/Edge
 2. Click the install icon in the address bar
 3. Or use the install button in the app header
 
@@ -736,12 +736,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **Documentation**: [DEPLOYMENT.md](./DEPLOYMENT.md)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/traktick/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/traktick/discussions)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/tractick/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/tractick/discussions)
 
 ---
 
-**Made with ❤️ by the TrakTick team**
+**Made with ❤️ by the tractick team**
 
 ## Features
 

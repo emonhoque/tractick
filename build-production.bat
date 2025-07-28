@@ -1,5 +1,5 @@
 @echo off
-REM Production Build Script for traktick (Windows)
+REM Production Build Script for tractick (Windows)
 
 echo 🚀 Starting production build...
 

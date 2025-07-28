@@ -1,7 +1,7 @@
-// Service Worker for TrakTick PWA
-const CACHE_NAME = 'traktick-v1.0.0';
-const STATIC_CACHE = 'traktick-static-v1.0.0';
-const DYNAMIC_CACHE = 'traktick-dynamic-v1.0.0';
+// Service Worker for tractick PWA
+const CACHE_NAME = 'tractick-v1.0.0';
+const STATIC_CACHE = 'tractick-static-v1.0.0';
+const DYNAMIC_CACHE = 'tractick-dynamic-v1.0.0';
 
 // Files to cache immediately
 const STATIC_FILES = [
@@ -165,7 +165,7 @@ async function doBackgroundSync() {
 // Push notification handling
 self.addEventListener('push', (event) => {
   const options = {
-    body: event.data ? event.data.text() : 'New notification from TrakTick',
+    body: event.data ? event.data.text() : 'New notification from tractick',
     icon: '/assets/android/android-launchericon-192-192.webp',
     badge: '/assets/android/android-launchericon-96-96.webp',
     vibrate: [100, 50, 100],
@@ -188,7 +188,7 @@ self.addEventListener('push', (event) => {
   };
   
   event.waitUntil(
-    self.registration.showNotification('TrakTick', options)
+    self.registration.showNotification('tractick', options)
   );
 });
 

@@ -137,7 +137,7 @@ export const HomePage = ({ onAuthModalOpen }) => {
     return (
       <div className="text-center py-12">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-          {!firebaseAvailable ? 'Firebase not configured' : 'Welcome to TrakTick'}
+          {!firebaseAvailable ? 'Firebase not configured' : 'Welcome to tractick'}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
           {!firebaseAvailable ? 'Please configure Firebase to use this feature.' : 'Please sign in to access your time tracking dashboard.'}

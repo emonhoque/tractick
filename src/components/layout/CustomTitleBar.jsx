@@ -125,14 +125,14 @@ export const CustomTitleBar = () => {
         <div className="flex items-center space-x-2">
           <img 
             src="/assets/header-logo-1.svg" 
-            alt="traktick" 
+            alt="tractick" 
             className="h-6 w-6"
             onError={(e) => {
               e.target.style.display = 'none'
             }}
           />
           <span className="font-semibold text-gray-900 dark:text-white">
-            traktick
+            tractick
           </span>
         </div>
       </div>

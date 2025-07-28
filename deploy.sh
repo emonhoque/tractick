@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Production Deployment Script for TrakTick
+# Production Deployment Script for tractick
 set -e
 
 echo "🚀 Starting production deployment..."
@@ -55,7 +55,7 @@ echo "✅ All critical files present!"
 
 # Optional: Deploy to server (uncomment and configure as needed)
 # echo "🚀 Deploying to server..."
-# rsync -avz --delete dist/ user@your-server:/var/www/traktick/
+# rsync -avz --delete dist/ user@your-server:/var/www/tractick/
 
 echo "🎉 Production deployment completed successfully!"
 echo "📁 Build output: ./dist/"

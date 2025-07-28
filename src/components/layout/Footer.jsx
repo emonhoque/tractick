@@ -16,7 +16,7 @@ export const Footer = () => {
             <span><ApiStatus /></span>
           </div>
           <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
-            <span>© 2025 traktick. All rights reserved.</span>
+            <span>© 2025 tractick. All rights reserved.</span>
           </div>
         </div>
       </div>

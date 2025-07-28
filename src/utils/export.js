@@ -22,7 +22,7 @@ export const exportSessionsToJSON = (sessions) => {
   
   const link = document.createElement('a')
   link.href = URL.createObjectURL(dataBlob)
-  link.download = `traktick-sessions-${new Date().toISOString().split('T')[0]}.json`
+  link.download = `tractick-sessions-${new Date().toISOString().split('T')[0]}.json`
   link.click()
   
   URL.revokeObjectURL(link.href)
@@ -51,7 +51,7 @@ export const exportSessionsToCSV = (sessions) => {
   
   const link = document.createElement('a')
   link.href = URL.createObjectURL(dataBlob)
-  link.download = `traktick-sessions-${new Date().toISOString().split('T')[0]}.csv`
+  link.download = `tractick-sessions-${new Date().toISOString().split('T')[0]}.csv`
   link.click()
   
   URL.revokeObjectURL(link.href)
