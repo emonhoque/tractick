@@ -240,7 +240,7 @@ export const WeatherProvider = ({ children }) => {
           forecast
         }
       } catch (error) {
-        console.error(`Weather: Error fetching weather for location:`, location, error)
+        // Error fetching weather for location
         return {
           locationId: location.id || `${place}_${country}`,
           error: error.message
@@ -370,7 +370,7 @@ export const WeatherProvider = ({ children }) => {
     clearCache,
     getCacheStats,
     
-    // Cache access (for debugging)
+    // Cache access
     weatherCache,
     forecastCache
   }

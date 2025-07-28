@@ -339,3 +339,921 @@ img, video, iframe, svg {
     overflow-x: hidden; /* Ensure no horizontal scroll on mobile */
   }
 }
+
+/* Android-specific PWA styles */
+@supports (-webkit-touch-callout: none) {
+  /* iOS styles - keep existing iOS functionality */
+  /* iOS Safari specific styles */
+  body {
+    /* Prevent zoom on input focus */
+    -webkit-text-size-adjust: 100%;
+    /* Prevent rubber band scrolling */
+    -webkit-overflow-scrolling: touch;
+    /* Prevent selection */
+    -webkit-user-select: none;
+    user-select: none;
+    /* Prevent tap highlight */
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Allow text selection in specific areas */
+  input, textarea, [contenteditable] {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  
+  /* iOS status bar spacing */
+  .ios-status-bar-spacing {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* iOS notch handling */
+  .ios-notch-safe {
+    padding-top: max(env(safe-area-inset-top), 20px);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* iOS home indicator spacing */
+  .ios-home-indicator-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Prevent iOS Safari from showing the address bar */
+  @media screen and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 2) {
+    body {
+      min-height: -webkit-fill-available;
+    }
+    
+    html {
+      height: -webkit-fill-available;
+    }
+  }
+  
+  /* iOS Safari viewport height fix */
+  .ios-viewport-height {
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+  
+  /* iOS Safari input zoom prevention */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* iOS Safari momentum scrolling */
+  .ios-momentum-scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+  
+  /* iOS Safari pull-to-refresh prevention */
+  .ios-no-pull-refresh {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
+  }
+  
+  /* iOS Safari back gesture prevention */
+  .ios-no-back-gesture {
+    touch-action: pan-x pan-y;
+  }
+  
+  /* iOS Safari keyboard handling */
+  .ios-keyboard-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* iOS Safari fullscreen mode */
+  .ios-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+}
+
+/* Android-specific PWA styles */
+.android-device {
+  /* Android-specific optimizations */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.android-device body {
+  /* Android-specific body styles */
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.android-device input,
+.android-device textarea,
+.android-device [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Android ripple effect */
+.android-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.android-ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  animation: android-ripple 0.6s ease-out;
+}
+
+@keyframes android-ripple {
+  to {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+/* Android status bar */
+.android-status-bar {
+  background: var(--status-bar-bg, #000);
+  color: var(--status-bar-color, #fff);
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Android navigation bar spacing */
+.android-nav-bar-spacing {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Android keyboard handling */
+.android-keyboard-visible {
+  height: 100vh !important;
+  overflow: hidden;
+}
+
+/* Android touch optimizations */
+.android-device button,
+.android-device [role="button"] {
+  min-height: 48px;
+  min-width: 48px;
+  touch-action: manipulation;
+}
+
+/* Windows-specific PWA styles */
+.windows-device {
+  /* Windows-specific optimizations */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.windows-device body {
+  /* Windows-specific body styles */
+  background: var(--windows-bg, #f3f4f6);
+}
+
+/* Windows accent color support */
+.windows-accent {
+  background: var(--windows-accent-color, #0078d4);
+  color: white;
+}
+
+.windows-accent:hover {
+  background: var(--windows-accent-hover, #106ebe);
+}
+
+/* Windows system font */
+.windows-font {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Windows touch feedback */
+.windows-touch-active {
+  background: rgba(0, 120, 212, 0.1);
+  transform: scale(0.98);
+  transition: all 0.1s ease;
+}
+
+/* Windows keyboard shortcuts hint */
+.windows-shortcut-hint {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-left: 0.5rem;
+}
+
+/* Windows system integration */
+.windows-system-integration {
+  /* Windows-specific system integration styles */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Platform-specific standalone modes */
+.android-standalone {
+  /* Android standalone mode */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.android-standalone .app-content {
+  height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.windows-standalone {
+  /* Windows standalone mode */
+  background: var(--windows-bg, #f3f4f6);
+}
+
+.windows-standalone .app-content {
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Platform-specific dark mode support */
+@media (prefers-color-scheme: dark) {
+  .android-status-bar {
+    --status-bar-bg: #000;
+    --status-bar-color: #fff;
+  }
+  
+  .windows-standalone {
+    --windows-bg: #1f2937;
+    --windows-accent-color: #60a5fa;
+    --windows-accent-hover: #3b82f6;
+  }
+  
+  .windows-device body {
+    background: var(--windows-bg, #1f2937);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .android-status-bar {
+    --status-bar-bg: #fff;
+    --status-bar-color: #000;
+  }
+  
+  .windows-standalone {
+    --windows-bg: #f3f4f6;
+    --windows-accent-color: #0078d4;
+    --windows-accent-hover: #106ebe;
+  }
+  
+  .windows-device body {
+    background: var(--windows-bg, #f3f4f6);
+  }
+}
+
+/* Platform-specific install prompts */
+.android-install-prompt,
+.windows-install-prompt {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.android-install-content,
+.windows-install-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px;
+  text-align: center;
+  max-width: 400px;
+}
+
+.android-menu-icon {
+  font-size: 20px;
+  color: #4285f4;
+}
+
+.windows-install-icon {
+  font-size: 20px;
+  color: #0078d4;
+}
+
+/* Platform-specific responsive design */
+@media (max-width: 768px) {
+  .android-device .app-content {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .windows-device .app-content {
+    padding: 16px;
+  }
+}
+
+/* Platform-specific animations */
+.android-device .animate-fade-in {
+  animation: android-fade-in 0.3s ease-out;
+}
+
+.windows-device .animate-fade-in {
+  animation: windows-fade-in 0.3s ease-out;
+}
+
+@keyframes android-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes windows-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Platform-specific focus styles */
+.android-device .focus-visible:focus {
+  outline: 2px solid #4285f4;
+  outline-offset: 2px;
+}
+
+.windows-device .focus-visible:focus {
+  outline: 2px solid #0078d4;
+  outline-offset: 2px;
+}
+
+/* Platform-specific scrollbars */
+.android-device ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.android-device ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.windows-device ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.windows-device ::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.windows-device ::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+  background-clip: content-box;
+}
+
+/* iOS PWA specific styles */
+@media all and (display-mode: standalone) {
+  /* Styles for when app is installed as PWA */
+  body {
+    /* Remove browser UI elements */
+    overflow: hidden;
+  }
+  
+  /* Custom status bar styling */
+  .pwa-status-bar {
+    background: var(--status-bar-bg, #000);
+    color: var(--status-bar-color, #fff);
+    padding-top: env(safe-area-inset-top);
+    height: calc(44px + env(safe-area-inset-top));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  /* PWA navigation bar */
+  .pwa-nav-bar {
+    background: var(--nav-bar-bg, #fff);
+    border-bottom: 1px solid var(--nav-bar-border, #e5e7eb);
+    padding: 12px 16px;
+    padding-top: calc(12px + env(safe-area-inset-top));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* PWA content area */
+  .pwa-content {
+    height: calc(100vh - 44px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* PWA bottom navigation */
+  .pwa-bottom-nav {
+    background: var(--bottom-nav-bg, #fff);
+    border-top: 1px solid var(--bottom-nav-border, #e5e7eb);
+    padding: 8px 16px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+}
+
+/* iOS dark mode support */
+@media (prefers-color-scheme: dark) {
+  .pwa-status-bar {
+    --status-bar-bg: #000;
+    --status-bar-color: #fff;
+  }
+  
+  .pwa-nav-bar {
+    --nav-bar-bg: #1f2937;
+    --nav-bar-border: #374151;
+  }
+  
+  .pwa-bottom-nav {
+    --bottom-nav-bg: #1f2937;
+    --bottom-nav-border: #374151;
+  }
+}
+
+/* iOS light mode support */
+@media (prefers-color-scheme: light) {
+  .pwa-status-bar {
+    --status-bar-bg: #fff;
+    --status-bar-color: #000;
+  }
+  
+  .pwa-nav-bar {
+    --nav-bar-bg: #fff;
+    --nav-bar-border: #e5e7eb;
+  }
+  
+  .pwa-bottom-nav {
+    --bottom-nav-bg: #fff;
+    --bottom-nav-border: #e5e7eb;
+  }
+}
+
+/* Custom title bar styles for window controls overlay */
+@supports (window-controls-overlay: none) {
+  :root {
+    --titlebar-height: 0px;
+  }
+  
+  body {
+    /* Ensure the body doesn't have default margins that interfere with the title bar */
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Make sure the app container respects the title bar area */
+  #root {
+    min-height: 100vh;
+  }
+}
+
+/* Webkit-specific styles for draggable title bar */
+.titlebar-drag {
+  -webkit-app-region: drag;
+}
+
+.titlebar-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Ensure buttons and interactive elements are not draggable */
+button, input, select, textarea, a {
+  -webkit-app-region: no-drag;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Focus styles */
+.focus-visible:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Animation classes */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom utility classes */
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.text-shadow-lg {
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient backgrounds */
+.gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.gradient-success {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.gradient-warning {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+/* Custom button styles */
+.btn-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Loading spinner */
+.spinner {
+  border: 2px solid #f3f4f6;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive text sizes */
+.text-responsive {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.text-responsive-lg {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.text-responsive-xl {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+/* Custom form styles */
+.form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.form-input:focus {
+  @apply ring-2 ring-blue-500 border-blue-500;
+}
+
+.dark .form-input {
+  @apply bg-gray-800 border-gray-600 text-white;
+}
+
+.dark .form-input:focus {
+  @apply ring-blue-400 border-blue-400;
+}
+
+/* Custom modal styles */
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.dark .modal-content {
+  background: #1f2937;
+  border: 1px solid #374151;
+}
+
+/* Custom tooltip styles */
+.tooltip {
+  position: relative;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 1000;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+}
+
+/* Custom notification styles */
+.notification {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  animation: slideInRight 0.3s ease-out;
+}
+
+.dark .notification {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Custom progress bar */
+.progress-bar {
+  background: #e5e7eb;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.dark .progress-bar {
+  background: #374151;
+}
+
+/* Custom toggle switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 3rem;
+  height: 1.5rem;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 1.5rem;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 1.125rem;
+  width: 1.125rem;
+  left: 0.1875rem;
+  bottom: 0.1875rem;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: #3b82f6;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(1.5rem);
+}
+
+/* Custom badge styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.badge-primary {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.dark .badge {
+  background: #374151;
+  color: #d1d5db;
+}
+
+.dark .badge-primary {
+  background: #1e3a8a;
+  color: #93c5fd;
+}
+
+.dark .badge-success {
+  background: #064e3b;
+  color: #6ee7b7;
+}
+
+.dark .badge-warning {
+  background: #78350f;
+  color: #fcd34d;
+}
+
+.dark .badge-error {
+  background: #7f1d1d;
+  color: #fca5a5;
+}

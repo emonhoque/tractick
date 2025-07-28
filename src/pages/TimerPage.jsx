@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { playNotificationSound } from '../utils/timer'
 
-export const TimerPage = () => {
+export const TimerPage = ({ initialDuration = null }) => {
   const { user, firebaseAvailable } = useAuth()
   const [showInput, setShowInput] = useState(true)
   const {
@@ -18,6 +18,13 @@ export const TimerPage = () => {
     resumeTimer,
     stopTimer
   } = useActiveTimer()
+
+  // Handle initial duration from protocol handler
+  useEffect(() => {
+    if (initialDuration && !activeTimer) {
+      handleTimeSet(initialDuration)
+    }
+  }, [initialDuration, activeTimer])
 
   // Handle timer completion
   useEffect(() => {
@@ -29,7 +36,7 @@ export const TimerPage = () => {
       if (Notification.permission === 'granted') {
         new Notification('Timer Complete!', {
           body: 'Your countdown timer has finished.',
-          icon: '/favicon.ico'
+          icon: '/assets/favicon.png'
         })
       }
     }

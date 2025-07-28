@@ -48,7 +48,6 @@ export const useDragAndDrop = (items, onReorder) => {
         
         await batch.commit()
       } catch (error) {
-        console.error('Error updating clock order:', error)
         // Revert to original order on error
         return
       }

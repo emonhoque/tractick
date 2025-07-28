@@ -65,10 +65,9 @@ export const searchPlaces = async (query) => {
     } else {
       return []
     }
-  } catch (error) {
-    console.error('Error searching places with Places API (New):', error)
-    throw error
-  }
+      } catch (error) {
+      throw error
+    }
 }
 
 // Places API (New) - Get Place Details
@@ -102,10 +101,9 @@ export const getPlaceDetails = async (placeId) => {
       } : null,
       types: data.types || []
     }
-  } catch (error) {
-    console.error('Error getting place details with Places API (New):', error)
-    throw error
-  }
+      } catch (error) {
+      throw error
+    }
 }
 
 // Places API (New) - Autocomplete with improved error handling
@@ -139,7 +137,7 @@ export const searchPlacesAutocomplete = async (query) => {
     
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Places API response:', response.status, errorText)
+              // Places API error
       throw new Error(`Places API (New) autocomplete request failed: ${response.status}`)
     }
     
@@ -161,24 +159,17 @@ export const searchPlacesAutocomplete = async (query) => {
     } else {
       return []
     }
-  } catch (error) {
-    console.error('Error searching places with autocomplete (Places API New):', error)
-    throw error
-  }
+      } catch (error) {
+      throw error
+    }
 }
 
-// Legacy fallback for backward compatibility with Vite proxy
+// Legacy fallback for backward compatibility
 export const searchPlacesLegacy = async (query) => {
   try {
-    // Use Vite proxy for development to avoid CORS issues
-    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    const baseUrl = isDevelopment 
-      ? '/api-proxy/maps/api/place/findplacefromtext/json'
-      : 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json'
+    const baseUrl = 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json'
     
-    const url = isDevelopment
-      ? `${baseUrl}?input=${encodeURIComponent(query)}&inputtype=textquery&fields=place_id,name,formatted_address,geometry&key=${API_KEYS.GOOGLE_MAPS}`
-      : `${baseUrl}?input=${encodeURIComponent(query)}&inputtype=textquery&fields=place_id,name,formatted_address,geometry&key=${API_KEYS.GOOGLE_MAPS}`
+    const url = `${baseUrl}?input=${encodeURIComponent(query)}&inputtype=textquery&fields=place_id,name,formatted_address,geometry&key=${API_KEYS.GOOGLE_MAPS}`
     
     const response = await fetch(url)
     
@@ -200,10 +191,9 @@ export const searchPlacesLegacy = async (query) => {
     } else {
       throw new Error(`Google Places API error: ${data.status}`)
     }
-  } catch (error) {
-    console.error('Error searching places (legacy):', error)
-    throw error
-  }
+      } catch (error) {
+      throw error
+    }
 }
 
 // Alternative search using Google Maps JavaScript API (no CORS issues)
@@ -238,8 +228,7 @@ export const searchPlacesWithJSAPI = async (query) => {
         }
       })
     })
-  } catch (error) {
-    console.error('Error searching places with JS API:', error)
-    throw error
-  }
+      } catch (error) {
+      throw error
+    }
 } 

@@ -17,7 +17,6 @@ export const WorldClockCard = ({ clock, onEdit, onDelete }) => {
       try {
         // Check if we have a valid timezone
         if (!clock.timezoneId) {
-          console.warn('No timezone ID found for clock:', clock)
           setCurrentTime('Invalid timezone')
           setCurrentDate('Invalid timezone')
           return
@@ -30,7 +29,6 @@ export const WorldClockCard = ({ clock, onEdit, onDelete }) => {
         setCurrentTime(time)
         setCurrentDate(date)
       } catch (err) {
-        console.error('Error updating time:', err)
         // Fallback to current time if timezone is invalid
         setCurrentTime(new Date().toLocaleTimeString('en-US', { 
           hour12: !use24Hour, 
@@ -95,7 +93,6 @@ export const WorldClockCard = ({ clock, onEdit, onDelete }) => {
       const offset = TimezoneService.getTimezoneOffset(clock.timezoneId)
       return TimezoneService.formatOffset(offset)
     } catch (error) {
-      console.error('Error calculating offset:', error)
       return null
     }
   }

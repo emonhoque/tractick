@@ -48,7 +48,6 @@ export const useFirestore = () => {
       
       return docs
     } catch (error) {
-      console.error('Error fetching documents:', error)
       return []
     }
   }

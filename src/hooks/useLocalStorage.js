@@ -16,7 +16,6 @@ export const useLocalStorage = (key, initialValue) => {
         return item
       }
     } catch (error) {
-      console.error(`Error reading localStorage key "${key}":`, error)
       return initialValue
     }
   })
@@ -33,7 +32,7 @@ export const useLocalStorage = (key, initialValue) => {
         window.localStorage.setItem(key, String(valueToStore))
       }
     } catch (error) {
-      console.error(`Error setting localStorage key "${key}":`, error)
+      // Silent fail
     }
   }
 

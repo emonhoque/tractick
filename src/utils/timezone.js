@@ -20,13 +20,6 @@ const RETRY_DELAY = 1000 // 1 second
 
 // Helper function to get the appropriate API base URL
 const getGoogleApiUrl = (endpoint) => {
-  const isDevelopment = typeof window !== 'undefined' && 
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  
-  if (isDevelopment) {
-    return `/api-proxy/maps/api${endpoint}`
-  }
-  
   return `https://maps.googleapis.com/maps/api${endpoint}`
 }
 
@@ -37,7 +30,6 @@ export class TimezoneService {
     
     // Check if we have a Google API key
     if (!API_KEYS.GOOGLE_MAPS) {
-      console.warn('Google Maps API key not configured')
       return false
     }
     
@@ -61,7 +53,6 @@ export class TimezoneService {
       // Rate limiting protection
       const now = Date.now()
       if (now - lastApiCall < MIN_API_INTERVAL) {
-        console.warn('Rate limiting: Using cached data')
         return cached?.data || null
       }
       lastApiCall = now
@@ -112,8 +103,6 @@ export class TimezoneService {
             throw new Error(`Google Time Zone API error: ${data.status}`)
           }
         } catch (error) {
-          console.error(`Time Zone API attempt ${attempt + 1} failed:`, error)
-          
           if (attempt < MAX_RETRIES) {
             await new Promise(resolve => setTimeout(resolve, RETRY_DELAY))
             continue
@@ -126,7 +115,6 @@ export class TimezoneService {
       
       return null
     } catch (error) {
-      console.error('Error getting timezone from coordinates:', error)
       return null
     }
   }
@@ -170,7 +158,6 @@ export class TimezoneService {
       // This is better handled in the AddClockModalEnhanced component
       throw new Error('Location format not supported. Use coordinates or city search.')
     } catch (error) {
-      console.error('Error getting timezone info:', error)
       throw error
     }
   }
@@ -180,7 +167,6 @@ export class TimezoneService {
     try {
       // Handle null or undefined timezone
       if (!timezone) {
-        console.warn('Timezone is null or undefined, using UTC')
         timezone = 'UTC'
       }
 
@@ -192,7 +178,6 @@ export class TimezoneService {
         second: '2-digit'
       })
     } catch (error) {
-      console.error('Error getting current time:', error)
       return 'Invalid timezone'
     }
   }
@@ -202,7 +187,6 @@ export class TimezoneService {
     try {
       // Handle null or undefined timezone
       if (!timezone) {
-        console.warn('Timezone is null or undefined, using UTC')
         timezone = 'UTC'
       }
 
@@ -213,7 +197,6 @@ export class TimezoneService {
         day: 'numeric'
       })
     } catch (error) {
-      console.error('Error getting current date:', error)
       return 'Invalid timezone'
     }
   }
@@ -223,7 +206,6 @@ export class TimezoneService {
     try {
       // Handle null or undefined timezone
       if (!timezone) {
-        console.warn('Timezone is null or undefined, using UTC')
         return 0
       }
 
@@ -233,7 +215,6 @@ export class TimezoneService {
       const offset = (targetTime.getTime() - utc.getTime()) / 1000
       return offset
     } catch (error) {
-      console.error('Error calculating timezone offset:', error)
       return 0
     }
   }
@@ -243,7 +224,6 @@ export class TimezoneService {
     try {
       // Handle null or undefined timezone
       if (!timezone) {
-        console.warn('Timezone is null or undefined, using UTC')
         return 'UTC'
       }
 
@@ -253,7 +233,6 @@ export class TimezoneService {
       const match = timeString.match(/\s([A-Z]{3,4})\s*$/)
       return match ? match[1] : null
     } catch (error) {
-      console.error('Error getting timezone abbreviation:', error)
       return null
     }
   }
@@ -263,7 +242,6 @@ export class TimezoneService {
     try {
       // Handle null or undefined timezone
       if (!timezone) {
-        console.warn('Timezone is null or undefined, assuming no DST')
         return false
       }
 
@@ -277,7 +255,6 @@ export class TimezoneService {
       // If the timezone has different offsets in January and July, it observes DST
       return janOffset !== julOffset
     } catch (error) {
-      console.error('Error checking DST:', error)
       return false
     }
   }
@@ -287,7 +264,6 @@ export class TimezoneService {
     try {
       // Handle null or undefined timezone
       if (!timezone) {
-        console.warn('Timezone is null or undefined, using base offset')
         return baseOffset || 0
       }
 
@@ -297,7 +273,6 @@ export class TimezoneService {
       }
       return baseOffset || this.getTimezoneOffset(timezone)
     } catch (error) {
-      console.error('Error getting effective offset:', error)
       return baseOffset || 0
     }
   }
@@ -306,7 +281,6 @@ export class TimezoneService {
   static getFallbackTimeData(timezone) {
     // Handle null or undefined timezone
     if (!timezone) {
-      console.warn('Timezone is null or undefined, using UTC fallback')
       timezone = 'UTC'
     }
 
@@ -358,7 +332,6 @@ export class TimezoneService {
   static formatOffset(offsetSeconds) {
     // Handle null, undefined, or NaN values
     if (offsetSeconds === null || offsetSeconds === undefined || isNaN(offsetSeconds)) {
-      console.warn('Invalid offset value:', offsetSeconds)
       return 'GMT+00:00' // Default to UTC
     }
     
@@ -372,7 +345,6 @@ export class TimezoneService {
   static formatUTCOffset(offsetSeconds) {
     // Handle null, undefined, or NaN values
     if (offsetSeconds === null || offsetSeconds === undefined || isNaN(offsetSeconds)) {
-      console.warn('Invalid offset value:', offsetSeconds)
       return '+00:00' // Default to UTC
     }
     
@@ -387,7 +359,6 @@ export class TimezoneService {
     try {
       // Handle null or undefined timezone
       if (!targetTimezone) {
-        console.warn('Target timezone is null or undefined, returning source time')
         return sourceTime
       }
 
@@ -413,12 +384,11 @@ export class TimezoneService {
       
       return new Date(year, month - 1, day, hour, minute, second)
     } catch (error) {
-      console.error('Error converting time:', error)
       return sourceTime
     }
   }
 
-  // Reset API availability (for testing)
+  // Reset API availability
   static resetApiAvailability() {
     isGoogleApiAvailable = true
     consecutiveFailures = 0

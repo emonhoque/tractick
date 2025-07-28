@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       setFirebaseAvailable(false)
       setLoading(false)
-      setError('Firebase configuration error - running in demo mode')
+      setError('Firebase configuration error')
     }
 
     return () => {

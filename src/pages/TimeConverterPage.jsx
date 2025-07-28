@@ -15,6 +15,7 @@ export const TimeConverterPage = () => {
   const { use24Hour } = useTimeFormat()
   const [selectedTime, setSelectedTime] = useState(new Date())
   const [isDragging, setIsDragging] = useState(false)
+  const [showCopyNotification, setShowCopyNotification] = useState(false)
   const sliderRef = useRef(null)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -28,7 +29,7 @@ export const TimeConverterPage = () => {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Handle slider change
+  // Handle slider change with 15-minute snapping
   const handleSliderChange = (e) => {
     const value = parseInt(e.target.value)
     const newTime = new Date()
@@ -36,14 +37,25 @@ export const TimeConverterPage = () => {
     setSelectedTime(newTime)
   }
 
+  // Handle slider mouse up with snapping to 15-minute intervals
+  const handleSliderMouseUp = () => {
+    setIsDragging(false)
+    
+    // Snap to nearest 15-minute interval
+    const currentMinutes = selectedTime.getHours() * 60 + selectedTime.getMinutes()
+    const snappedMinutes = Math.round(currentMinutes / 15) * 15
+    
+    // Ensure we don't go beyond 23:59
+    const finalMinutes = Math.min(snappedMinutes, 1439)
+    
+    const snappedTime = new Date()
+    snappedTime.setHours(Math.floor(finalMinutes / 60), finalMinutes % 60, 0, 0)
+    setSelectedTime(snappedTime)
+  }
+
   // Handle slider mouse down
   const handleSliderMouseDown = () => {
     setIsDragging(true)
-  }
-
-  // Handle slider mouse up
-  const handleSliderMouseUp = () => {
-    setIsDragging(false)
   }
 
   // Format time for display
@@ -103,7 +115,6 @@ export const TimeConverterPage = () => {
         isPreviousDay: convertedDate < currentDate
       }
     } catch (error) {
-      console.error('Error converting time:', error)
       return null
     }
   }
@@ -142,6 +153,10 @@ export const TimeConverterPage = () => {
     
     const timeString = `The time is:\n${timeStrings.join('\n')}`
     navigator.clipboard.writeText(timeString)
+    
+    // Show notification
+    setShowCopyNotification(true)
+    setTimeout(() => setShowCopyNotification(false), 2000)
   }
 
   // Calculate slider value (minutes since midnight)
@@ -220,23 +235,28 @@ export const TimeConverterPage = () => {
           <CardContent className="p-6">
             {/* Current Time Display */}
             <div className="text-center mb-6">
-              <div className="text-4xl font-mono font-bold text-gray-900 dark:text-white mb-2">
-                {formatTime(selectedTime)}
-              </div>
-              <div className="text-lg text-gray-600 dark:text-gray-400">
-                {formatDate(selectedTime)} (Local time)
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-xl p-4 border border-red-100 dark:border-red-800/50">
+                <div className="text-4xl font-mono font-bold text-gray-900 dark:text-white mb-2 tracking-wider">
+                  {formatTime(selectedTime)}
+                </div>
+                <div className="text-lg text-gray-600 dark:text-gray-400 font-medium">
+                  {formatDate(selectedTime)}
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-500 mt-1">
+                  Local time
+                </div>
               </div>
             </div>
 
             {/* Time Slider */}
-            <div className="space-y-4">
+            <div className="space-y-6">
               {/* Time labels */}
-              <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
-                <span>12:00 AM</span>
-                <span>6:00 AM</span>
-                <span>12:00 PM</span>
-                <span>6:00 PM</span>
-                <span>11:59 PM</span>
+              <div className="flex justify-between text-sm font-medium text-gray-600 dark:text-gray-400 px-1">
+                <span className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">12:00 AM</span>
+                <span className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">6:00 AM</span>
+                <span className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">12:00 PM</span>
+                <span className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">6:00 PM</span>
+                <span className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">11:59 PM</span>
               </div>
               
               {/* Slider */}
@@ -327,7 +347,7 @@ export const TimeConverterPage = () => {
         </div>
 
         {/* Copy Button */}
-        <div className="flex justify-center pt-4">
+        <div className="flex flex-col items-center pt-4 space-y-4">
           <Button
             onClick={copyTimeString}
             className="px-8 py-3 text-lg font-semibold bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
@@ -335,6 +355,16 @@ export const TimeConverterPage = () => {
             <Copy className="h-5 w-5 mr-2" />
             Copy All Times
           </Button>
+          
+          {/* Copy Notification */}
+          {showCopyNotification && (
+            <div className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg animate-in slide-in-from-top-2 duration-300">
+              <div className="flex items-center gap-2">
+                <Copy className="h-4 w-4" />
+                <span className="font-medium">Times copied to clipboard!</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

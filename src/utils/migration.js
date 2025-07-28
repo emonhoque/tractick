@@ -31,6 +31,6 @@ export const migrateClockOrder = async (userId) => {
 
     await batch.commit()
   } catch (error) {
-    console.error('Migration failed:', error)
+    // Migration failed silently
   }
 } 

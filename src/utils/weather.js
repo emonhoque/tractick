@@ -24,7 +24,7 @@ const loadCacheFromStorage = () => {
       })
     }
   } catch (error) {
-    console.warn('Failed to load weather cache from localStorage:', error)
+    // Silent fail in production
   }
 }
 
@@ -37,7 +37,7 @@ const saveCacheToStorage = () => {
     })
     localStorage.setItem('weatherCache', JSON.stringify(cacheObject))
   } catch (error) {
-    console.warn('Failed to save weather cache to localStorage:', error)
+    // Silent fail in production
   }
 }
 
@@ -144,7 +144,6 @@ export const getCurrentWeather = async (city, countryCode = '') => {
         
         if (!response.ok) {
           const errorText = await response.text()
-          console.error('Weather API error response:', errorText)
           throw new Error(`Weather API error: ${response.status} - ${errorText}`)
         }
         
@@ -160,7 +159,6 @@ export const getCurrentWeather = async (city, countryCode = '') => {
       }
     })
   } catch (error) {
-    console.error('Error fetching current weather:', error)
     throw error
   }
 }
@@ -185,7 +183,6 @@ export const getWeatherForecast = async (city, countryCode = '') => {
         
         if (!response.ok) {
           const errorText = await response.text()
-          console.error('Forecast API error response:', errorText)
           throw new Error(`Weather API error: ${response.status} - ${errorText}`)
         }
         
@@ -201,7 +198,6 @@ export const getWeatherForecast = async (city, countryCode = '') => {
       }
     })
   } catch (error) {
-    console.error('Error fetching weather forecast:', error)
     throw error
   }
 }
@@ -226,7 +222,6 @@ export const getWeatherByCoordinates = async (lat, lon) => {
         
         if (!response.ok) {
           const errorText = await response.text()
-          console.error('Weather API error response:', errorText)
           throw new Error(`Weather API error: ${response.status} - ${errorText}`)
         }
         
@@ -242,7 +237,6 @@ export const getWeatherByCoordinates = async (lat, lon) => {
       }
     })
   } catch (error) {
-    console.error('Error fetching weather by coordinates:', error)
     throw error
   }
 }

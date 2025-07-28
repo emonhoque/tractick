@@ -47,7 +47,7 @@ export const WeatherBlock = ({ clocks = [] }) => {
     try {
       await fetchWeatherForLocations(clocksToShow, false, forceRefresh)
     } catch (err) {
-      // console.error('Weather: Error fetching weather:', err)
+      
     }
   }, [clocksToShow, fetchWeatherForLocations])
 

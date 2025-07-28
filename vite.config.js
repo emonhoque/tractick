@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.webp'],
+        includeAssets: ['assets/favicon.png'],
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
           runtimeCaching: [
@@ -57,13 +57,13 @@ export default defineConfig(({ mode }) => {
           categories: ['productivity', 'utilities'],
           icons: [
             {
-              src: '/android/android-launchericon-192-192.webp',
+              src: '/assets/android/android-launchericon-192-192.webp',
               sizes: '192x192',
               type: 'image/webp',
               purpose: 'any maskable'
             },
             {
-              src: '/android/android-launchericon-512-512.webp',
+              src: '/assets/android/android-launchericon-512-512.webp',
               sizes: '512x512',
               type: 'image/webp',
               purpose: 'any maskable'
@@ -77,7 +77,7 @@ export default defineConfig(({ mode }) => {
               url: '/stopwatch',
               icons: [
                 {
-                  src: '/android/android-launchericon-96-96.webp',
+                  src: '/assets/android/android-launchericon-96-96.webp',
                   sizes: '96x96'
                 }
               ]
@@ -89,7 +89,7 @@ export default defineConfig(({ mode }) => {
               url: '/timer',
               icons: [
                 {
-                  src: '/android/android-launchericon-96-96.webp',
+                  src: '/assets/android/android-launchericon-96-96.webp',
                   sizes: '96x96'
                 }
               ]
@@ -101,7 +101,7 @@ export default defineConfig(({ mode }) => {
               url: '/world-clock',
               icons: [
                 {
-                  src: '/android/android-launchericon-96-96.webp',
+                  src: '/assets/android/android-launchericon-96-96.webp',
                   sizes: '96x96'
                 }
               ]
@@ -127,27 +127,13 @@ export default defineConfig(({ mode }) => {
       },
       terserOptions: {
         compress: {
-          drop_console: isProduction,
-          drop_debugger: isProduction
+          drop_console: true,
+          drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info', 'console.debug']
         }
       }
     },
-    server: {
-      host: true,
-      port: 5173,
-      proxy: {
-        '/api-proxy': {
-          target: 'https://maps.googleapis.com',
-          changeOrigin: true,
-          rewrite: path => path.replace(/^\/api-proxy/, ''),
-        },
-        '/weather-proxy': {
-          target: 'https://api.openweathermap.org',
-          changeOrigin: true,
-          rewrite: path => path.replace(/^\/weather-proxy/, ''),
-        }
-      }
-    },
+
     define: {
       // Make environment variables available to the client
       'process.env.VITE_FIREBASE_API_KEY': JSON.stringify(env.VITE_FIREBASE_API_KEY),

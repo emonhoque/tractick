@@ -31,7 +31,6 @@ export const useUserPreferences = () => {
           })
         }
       } catch (error) {
-        console.error('Error loading user preferences:', error)
         setPreferences({
           weatherLocations: []
         })
@@ -55,7 +54,6 @@ export const useUserPreferences = () => {
       setPreferences(newPreferences)
       return true
     } catch (error) {
-      console.error('Error saving user preferences:', error)
       return false
     }
   }

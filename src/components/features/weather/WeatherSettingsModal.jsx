@@ -43,7 +43,7 @@ export const WeatherSettingsModal = ({ isOpen, onClose, clocks = [] }) => {
       await updateWeatherLocations(selectedLocations)
       onClose()
     } catch (error) {
-      console.error('Error saving weather preferences:', error)
+      // Silent fail
     } finally {
       setSaving(false)
     }

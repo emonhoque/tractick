@@ -48,7 +48,6 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
               geometry: place.geometry
             })) || []
           } catch (newApiError) {
-            console.error('Google Maps Places API (New) failed, trying JS API:', newApiError)
             
             try {
               // Fallback to JavaScript API (no CORS issues)
@@ -62,7 +61,7 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
                 geometry: place.geometry
               })) || []
             } catch (jsApiError) {
-              console.error('Google Maps JS API failed, trying legacy:', jsApiError)
+              
               
               try {
                 // Final fallback to legacy API with CORS proxy
@@ -76,7 +75,6 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
                   geometry: place.geometry
                 })) || []
               } catch (legacyError) {
-                console.error('All Google Maps APIs failed:', legacyError)
                 setError('Google Maps search failed. Please try again.')
                 results = []
               }
@@ -89,7 +87,6 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
         
         setSearchResults(results.slice(0, 10)) // Limit to 10 results
       } catch (err) {
-        console.error('Search error:', err)
         setError('Search failed. Please try again.')
         setSearchResults([])
       } finally {
@@ -121,10 +118,9 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
             timezone_name: timezoneInfo.timezone_name
           })
         } else {
-          console.warn('Could not get timezone info for selected place')
+          // Could not get timezone info for selected place
         }
       } catch (error) {
-        console.warn('Could not get timezone info for selected place:', error)
         // Keep the place selected but without timezone - it will be resolved during submission
       }
     }
@@ -190,7 +186,6 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
         dataSource: 'fallback'
       }
     } catch (error) {
-      console.error('Error getting complete timezone data:', error)
       // Fallback to basic data if API fails
       return {
         timezone: cityData.timezone || 'UTC',
@@ -247,7 +242,6 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
       setSelectedCity(null)
       onClose()
     } catch (err) {
-      console.error('Error adding clock:', err)
       setError(err.message || 'Failed to add clock. Please try again.')
     } finally {
       setLoading(false)

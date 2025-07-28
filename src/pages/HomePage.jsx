@@ -40,9 +40,9 @@ export const HomePage = ({ onAuthModalOpen }) => {
           ])
           setClocks(clocksData || [])
           setRecentSessions(sessionsData || [])
-        } catch (error) {
-          console.error('Error loading user data:', error)
-        }
+            } catch (error) {
+      // Silent fail
+    }
       }
     }
 
@@ -56,6 +56,13 @@ export const HomePage = ({ onAuthModalOpen }) => {
       icon: Clock,
       href: ROUTES.SCREENSAVER,
       color: 'text-gray-600 dark:text-gray-400'
+    },
+    {
+      name: 'Time Converter',
+      description: 'Convert between time formats',
+      icon: Globe,
+      href: ROUTES.TIME_CONVERTER,
+      color: 'text-cyan-600 dark:text-cyan-400'
     },
     {
       name: 'Timer',
@@ -77,13 +84,6 @@ export const HomePage = ({ onAuthModalOpen }) => {
       icon: Clock,
       href: ROUTES.WORLD_CLOCK,
       color: 'text-primary-600'
-    },
-    {
-      name: 'Time Converter',
-      description: 'Convert between time formats',
-      icon: Globe,
-      href: ROUTES.TIME_CONVERTER,
-      color: 'text-cyan-600 dark:text-cyan-400'
     },
     {
       name: 'Weather',

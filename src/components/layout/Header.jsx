@@ -146,7 +146,7 @@ export const Header = ({ onAuthModalOpen }) => {
         <div className="flex lg:flex-1">
           <Link to={ROUTES.HOME} className="-m-1.5 p-1.5 flex items-center justify-start w-[160px] h-14">
             <img 
-              src={theme === 'dark' ? '/header-logo-2-dark.webp' : '/header-logo-2-light.webp'} 
+              src={theme === 'dark' ? '/assets/header-logo-2-dark.webp' : '/assets/header-logo-2-light.webp'} 
               alt="TrakTick" 
               className="h-12 w-auto object-contain max-w-full"
             />
@@ -332,7 +332,7 @@ export const Header = ({ onAuthModalOpen }) => {
             <div className="flex items-center justify-between">
               <Link to={ROUTES.HOME} className="-m-1.5 p-1.5 flex items-center justify-start w-[120px] h-8">
                 <img 
-                  src={theme === 'dark' ? '/header-logo-2-dark.webp' : '/header-logo-2-light.webp'} 
+                  src={theme === 'dark' ? '/assets/header-logo-2-dark.webp' : '/assets/header-logo-2-light.webp'} 
                   alt="TrakTick" 
                   className="h-8 w-auto object-contain max-w-full"
                 />

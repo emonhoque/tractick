@@ -66,7 +66,6 @@ export const ScreensaverPage = () => {
         weather
       }
     } catch (error) {
-      console.error('Error getting clock time:', error)
       return null
     }
   }
@@ -83,7 +82,7 @@ export const ScreensaverPage = () => {
           const clocksData = await getDocuments('clocks', 'order', 'asc')
           setClocks(clocksData || [])
         } catch (error) {
-          console.error('Error loading clocks:', error)
+          // Silent fail
         }
       }
     }
@@ -109,24 +108,7 @@ export const ScreensaverPage = () => {
     }
   }, [])
 
-  // Disabled dynamic font sizing - using fixed large sizes instead
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     calculateFontSize()
-  //   }, 100) // Small delay to ensure DOM is ready
-  //   
-  //   return () => clearTimeout(timer)
-  // }, [currentDisplay?.time, currentTime, theme, use24Hour])
 
-  // Handle window resize for font size recalculation
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     calculateFontSize()
-  //   }
-
-  //   window.addEventListener('resize', handleResize)
-  //   return () => window.removeEventListener('resize', handleResize)
-  // }, [])
 
   // Auto-hide buttons after 10 seconds of inactivity
   useEffect(() => {
@@ -222,13 +204,13 @@ export const ScreensaverPage = () => {
       document.documentElement.requestFullscreen().then(() => {
         setIsFullscreen(true)
       }).catch(err => {
-        console.error('Error attempting to enable fullscreen:', err)
+        // Silent fail
       })
     } else {
       document.exitFullscreen().then(() => {
         setIsFullscreen(false)
       }).catch(err => {
-        console.error('Error attempting to exit fullscreen:', err)
+        // Silent fail
       })
     }
   }
@@ -411,14 +393,14 @@ export const ScreensaverPage = () => {
             {/* Time Display - Large and prominent */}
             <div 
               ref={timeDisplayRef}
-              className={`text-8xl sm:text-9xl md:text-[12rem] lg:text-[8rem] xl:text-[10rem] font-light tracking-wider leading-tight ${theme === 'dark' ? 'text-white' : 'text-black'} drop-shadow-lg`}
+              className={`text-6xl sm:text-8xl md:text-9xl lg:text-[8rem] xl:text-[10rem] font-light tracking-wider leading-tight ${theme === 'dark' ? 'text-white' : 'text-black'} drop-shadow-lg`}
             >
               {currentDisplay?.time || formatTime()}
             </div>
             
             {/* Location */}
             {currentDisplay?.location && (
-              <div className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium tracking-wide ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'} drop-shadow-md`}>
+              <div className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium tracking-wide ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'} drop-shadow-md`}>
                 {currentDisplay.location}
               </div>
             )}
@@ -432,9 +414,8 @@ export const ScreensaverPage = () => {
                     <img 
                       src={getWeatherIcon(currentDisplay.weather.weather[0].icon)} 
                       alt={currentDisplay.weather.weather[0]?.description || 'Weather'}
-                      className="w-20 h-20 sm:w-24 sm:h-24 drop-shadow-lg"
+                      className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 drop-shadow-lg"
                       onError={(e) => {
-                        console.error('Failed to load weather icon:', e.target.src)
                         e.target.style.display = 'none'
                       }}
                     />
@@ -442,10 +423,10 @@ export const ScreensaverPage = () => {
                     <span className="text-5xl sm:text-6xl drop-shadow-lg">🌤️</span>
                   )}
                   <div className="text-center">
-                    <div className={`font-light text-3xl sm:text-4xl tracking-wide ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'} drop-shadow-md`}>
+                    <div className={`font-light text-2xl sm:text-3xl md:text-4xl tracking-wide ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'} drop-shadow-md`}>
                       {Math.round(currentDisplay.weather.main.temp)}°C
                     </div>
-                    <div className={`text-base sm:text-lg capitalize tracking-wide ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} drop-shadow-sm`}>
+                    <div className={`text-sm sm:text-base md:text-lg capitalize tracking-wide ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} drop-shadow-sm`}>
                       {currentDisplay.weather.weather?.[0]?.description || 'Unknown'}
                     </div>
                   </div>
@@ -453,7 +434,7 @@ export const ScreensaverPage = () => {
               )}
               
               {/* Date */}
-              <div className={`text-xl sm:text-2xl lg:text-3xl font-light tracking-wide ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} drop-shadow-sm`}>
+              <div className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-light tracking-wide ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} drop-shadow-sm`}>
                 {currentDisplay?.date || currentDate}
               </div>
             </div>

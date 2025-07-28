@@ -19,6 +19,9 @@ export const ThemeProvider = ({ children }) => {
     const root = window.document.documentElement
     root.classList.remove('light', 'dark')
     root.classList.add(theme)
+    
+    // Dispatch theme change event for PWA status bar updates
+    window.dispatchEvent(new CustomEvent('themeChange', { detail: { theme } }))
   }, [theme, mounted])
 
   const toggleTheme = () => {

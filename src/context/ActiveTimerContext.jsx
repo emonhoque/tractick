@@ -20,7 +20,7 @@ export const ActiveTimerProvider = ({ children }) => {
     try {
       sessionStorage.setItem(key, JSON.stringify(data))
     } catch (error) {
-      console.warn('Failed to save to sessionStorage:', error)
+      // Silent fail
     }
   }
 
@@ -29,7 +29,6 @@ export const ActiveTimerProvider = ({ children }) => {
       const data = sessionStorage.getItem(key)
       return data ? JSON.parse(data) : null
     } catch (error) {
-      console.warn('Failed to load from sessionStorage:', error)
       return null
     }
   }
