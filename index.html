@@ -57,32 +57,39 @@
     <link rel="apple-touch-icon" sizes="512x512" href="/assets/ios/512.webp" />
     <link rel="apple-touch-icon" sizes="1024x1024" href="/assets/ios/1024.webp" />
     
-    <!-- iOS Splash Screens -->
+    <!-- iOS Splash Screens - Using iosPWASplash Library -->
+    <script src="https://cdn.jsdelivr.net/npm/ios-pwa-splash@1.0.0/cdn.min.js"></script>
+    <script>
+      // Generate iOS PWA splash screens dynamically
+      iosPWASplash('/assets/icon-512.webp', '#ffffff');
+    </script>
+    
+    <!-- Fallback Manual Splash Screens (if library fails) -->
     <!-- iPhone Splash Screens -->
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_SE_portrait.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_8_Plus_portrait.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_X_portrait.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_11_Pro_Max_portrait.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_12_Pro_Max_portrait.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_13_Pro_Max_portrait.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_14_Pro_portrait.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_14_Pro_Max_portrait.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_14_Plus_portrait.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_15_portrait.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_15_Plus_portrait.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_15_Pro_portrait.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_15_Pro_Max_portrait.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_16_portrait.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_16_Plus_portrait.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_16_Pro_portrait.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_16_Pro_Max_portrait.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_SE_portrait.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_8_Plus_portrait.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_X_portrait.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_11_Pro_Max_portrait.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_12_Pro_Max_portrait.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_13_Pro_Max_portrait.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_14_Pro_portrait.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_14_Pro_Max_portrait.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_14_Plus_portrait.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_15_portrait.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_15_Plus_portrait.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_15_Pro_portrait.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_15_Pro_Max_portrait.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_16_portrait.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_16_Plus_portrait.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_16_Pro_portrait.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPhone_16_Pro_Max_portrait.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
     
     <!-- iPad Splash Screens -->
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPad_10.2_portrait.png" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPad_Air_10.9_portrait.png" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPad_Pro_11_portrait.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPad_Pro_12.9_portrait.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" />
-    <link defer rel="apple-touch-startup-image" href="/assets/splash_screens/iPad_Mini_8.3_portrait.png" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPad_10.2_portrait.png" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPad_Air_10.9_portrait.png" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPad_Pro_11_portrait.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPad_Pro_12.9_portrait.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/assets/splash_screens/iPad_Mini_8.3_portrait.png" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2)" />
     
     <!-- Android Icons -->
     <link rel="icon" type="image/webp" sizes="192x192" href="/assets/android/android-launchericon-192-192.webp" />
@@ -101,27 +108,18 @@
     <noscript><link rel="stylesheet" href="/src/index.css" /></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- iOS PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="standalone" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="TrakTick" />
+    <meta name="apple-mobile-web-app-orientations" content="portrait" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- Theme Colors -->
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
     <meta name="msapplication-TileColor" content="#d90c00" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="TrakTick" />
-    
-    <!-- Additional iOS PWA meta tags -->
-    <meta name="apple-mobile-web-app-orientations" content="portrait" />
-    <meta name="apple-touch-fullscreen" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="standalone" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-itunes-app" content="app-clip-bundle-id=com.traktick.app" />
-    
-    <!-- iOS Smart App Banner -->
-    <meta name="apple-itunes-app" content="app-argument=, app-clip-bundle-id=com.traktick.app" />
-    
-    <!-- iOS Web App Manifest -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" media="(prefers-color-scheme: light)" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" media="(prefers-color-scheme: dark)" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
