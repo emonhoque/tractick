@@ -9,7 +9,7 @@ export const loadGoogleMapsAPI = () => {
     }
 
     const script = document.createElement('script')
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEYS.GOOGLE_MAPS}&libraries=places`
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEYS.GOOGLE_MAPS}&libraries=places,geometry`
     script.async = true
     script.defer = true
     
@@ -65,9 +65,9 @@ export const searchPlaces = async (query) => {
     } else {
       return []
     }
-      } catch (error) {
-      throw error
-    }
+  } catch (error) {
+    throw error
+  }
 }
 
 // Places API (New) - Get Place Details
@@ -101,12 +101,12 @@ export const getPlaceDetails = async (placeId) => {
       } : null,
       types: data.types || []
     }
-      } catch (error) {
-      throw error
-    }
+  } catch (error) {
+    throw error
+  }
 }
 
-// Places API (New) - Autocomplete with improved error handling
+// Enhanced Places API search with better error handling
 export const searchPlacesAutocomplete = async (query) => {
   try {
     // Check if we're in a browser environment
@@ -119,49 +119,70 @@ export const searchPlacesAutocomplete = async (query) => {
       throw new Error('Google Maps API key not configured')
     }
 
-    const response = await fetch(
-      `https://places.googleapis.com/v1/places:searchText`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Goog-Api-Key': API_KEYS.GOOGLE_MAPS,
-          'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.types'
-        },
-        body: JSON.stringify({
-          textQuery: query,
-          maxResultCount: 5
-        })
+    // Try multiple search strategies for better city results
+    const searchStrategies = [
+      `${query} city`,
+      `${query}`,
+      `city of ${query}`,
+      `${query} municipality`
+    ]
+
+    let allResults = []
+
+    for (const searchQuery of searchStrategies) {
+      try {
+        const response = await fetch(
+          `https://places.googleapis.com/v1/places:searchText`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Goog-Api-Key': API_KEYS.GOOGLE_MAPS,
+              'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.types'
+            },
+            body: JSON.stringify({
+              textQuery: searchQuery,
+              maxResultCount: 5
+            })
+          }
+        )
+        
+        if (!response.ok) {
+          const errorText = await response.text()
+          continue // Try next strategy
+        }
+        
+        const data = await response.json()
+        
+        if (data.places && data.places.length > 0) {
+          const results = data.places.map(place => ({
+            place_id: place.id,
+            name: place.displayName?.text || 'Unknown',
+            formatted_address: place.formattedAddress || 'Unknown',
+            types: place.types || [],
+            geometry: place.location ? {
+              location: {
+                lat: place.location.latitude,
+                lng: place.location.longitude
+              }
+            } : null
+          }))
+          allResults.push(...results)
+        }
+      } catch (strategyError) {
+        continue // Try next strategy
       }
+    }
+    
+    // Remove duplicates based on place_id and return unique results
+    const uniqueResults = allResults.filter((place, index, self) => 
+      index === self.findIndex(p => p.place_id === place.place_id)
     )
     
-    if (!response.ok) {
-      const errorText = await response.text()
-              // Places API error
-      throw new Error(`Places API (New) autocomplete request failed: ${response.status}`)
-    }
-    
-    const data = await response.json()
-    
-    if (data.places) {
-      // Return simplified results without additional API calls to avoid rate limiting
-      return data.places.map(place => ({
-        place_id: place.id,
-        name: place.displayName?.text || 'Unknown',
-        formatted_address: place.formattedAddress || 'Unknown',
-        geometry: place.location ? {
-          location: {
-            lat: place.location.latitude,
-            lng: place.location.longitude
-          }
-        } : null
-      }))
-    } else {
-      return []
-    }
-      } catch (error) {
-      throw error
-    }
+    return uniqueResults.slice(0, 10) // Return max 10 results
+  } catch (error) {
+    throw error
+  }
 }
 
 // Legacy fallback for backward compatibility
@@ -169,12 +190,32 @@ export const searchPlacesLegacy = async (query) => {
   try {
     const baseUrl = 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json'
     
-    const url = `${baseUrl}?input=${encodeURIComponent(query)}&inputtype=textquery&fields=place_id,name,formatted_address,geometry&key=${API_KEYS.GOOGLE_MAPS}`
+    // Try direct API first
+    let url = `${baseUrl}?input=${encodeURIComponent(query + ' city')}&inputtype=textquery&fields=place_id,name,formatted_address,geometry&key=${API_KEYS.GOOGLE_MAPS}`
     
-    const response = await fetch(url)
+    let response
+    try {
+      response = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+    } catch (corsError) {
+      // If CORS fails, try with a simple proxy
+      url = `https://cors-anywhere.herokuapp.com/${baseUrl}?input=${encodeURIComponent(query + ' city')}&inputtype=textquery&fields=place_id,name,formatted_address,geometry&key=${API_KEYS.GOOGLE_MAPS}`
+      response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Origin': window.location.origin
+        }
+      })
+    }
     
     if (!response.ok) {
-      throw new Error('Google Places API request failed')
+      throw new Error(`Google Places API request failed: ${response.status}`)
     }
     
     const data = await response.json()
@@ -191,9 +232,9 @@ export const searchPlacesLegacy = async (query) => {
     } else {
       throw new Error(`Google Places API error: ${data.status}`)
     }
-      } catch (error) {
-      throw error
-    }
+  } catch (error) {
+    throw error
+  }
 }
 
 // Alternative search using Google Maps JavaScript API (no CORS issues)
@@ -208,8 +249,8 @@ export const searchPlacesWithJSAPI = async (query) => {
       const service = new window.google.maps.places.PlacesService(document.createElement('div'))
       
       const request = {
-        query: query,
-        fields: ['place_id', 'name', 'formatted_address', 'geometry']
+        query: `${query} city`,
+        fields: ['place_id', 'name', 'formatted_address', 'geometry', 'types']
       }
       
       service.findPlaceFromQuery(request, (results, status) => {
@@ -218,7 +259,8 @@ export const searchPlacesWithJSAPI = async (query) => {
             place_id: place.place_id,
             name: place.name,
             formatted_address: place.formatted_address,
-            geometry: place.geometry
+            geometry: place.geometry,
+            types: place.types
           }))
           resolve(places)
         } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
@@ -228,7 +270,7 @@ export const searchPlacesWithJSAPI = async (query) => {
         }
       })
     })
-      } catch (error) {
-      throw error
-    }
+  } catch (error) {
+    throw error
+  }
 } 

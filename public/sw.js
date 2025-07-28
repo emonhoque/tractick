@@ -64,8 +64,12 @@ self.addEventListener('fetch', (event) => {
   // Skip external requests (except for essential APIs)
   if (!url.origin.includes(self.location.origin) && 
       !url.hostname.includes('firestore.googleapis.com') &&
-      !url.hostname.includes('api.openweathermap.org') &&
-      !url.hostname.includes('maps.googleapis.com')) {
+      !url.hostname.includes('api.openweathermap.org')) {
+    return;
+  }
+  
+  // Skip Google Maps API requests to avoid CORS issues
+  if (url.hostname.includes('maps.googleapis.com')) {
     return;
   }
   

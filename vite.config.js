@@ -104,6 +104,27 @@ export default defineConfig(({ mode }) => {
       'process.env.VITE_FIREBASE_MEASUREMENT_ID': JSON.stringify(env.VITE_FIREBASE_MEASUREMENT_ID),
       'process.env.VITE_GOOGLE_API_KEY': JSON.stringify(env.VITE_GOOGLE_API_KEY),
       'process.env.VITE_OPENWEATHER_API_KEY': JSON.stringify(env.VITE_OPENWEATHER_API_KEY)
+    },
+    
+    server: {
+      host: '0.0.0.0', // Bind to all interfaces
+      port: 5173,
+      hmr: {
+        port: 5173,
+        host: 'localhost'
+      },
+      proxy: {
+        '/api-proxy': {
+          target: 'https://maps.googleapis.com',
+          changeOrigin: true,
+          rewrite: path => path.replace(/^\/api-proxy/, ''),
+        },
+        '/timezone-proxy': {
+          target: 'https://worldtimeapi.org',
+          changeOrigin: true,
+          rewrite: path => path.replace(/^\/timezone-proxy/, ''),
+        }
+      }
     }
   }
 })

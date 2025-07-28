@@ -258,7 +258,7 @@ export const HomePage = ({ onAuthModalOpen }) => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {clocks.slice(0, 3).map((clock) => (
-              <WorldClockCard key={clock.id} clock={clock} />
+              <WorldClockCard key={clock.id} clock={clock} showMenuButton={false} />
             ))}
           </div>
         </section>

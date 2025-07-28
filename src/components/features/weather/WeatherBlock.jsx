@@ -89,21 +89,7 @@ export const WeatherBlock = ({ clocks = [] }) => {
     clearCache()
   }
 
-  // Show loading state if no clocks are available
-  if (clocksToShow.length === 0) {
-    return (
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Weather</h3>
-          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-            <span>Loading weather...</span>
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
-
+  // Show proper message if no clocks are available
   if (!clocks || clocks.length === 0) {
     return (
       <Card>
@@ -113,6 +99,31 @@ export const WeatherBlock = ({ clocks = [] }) => {
             <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-500 dark:text-gray-400">No locations available</p>
             <p className="text-sm text-gray-400 dark:text-gray-500">Add world clocks to see weather</p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Show loading state if no clocks are selected for weather display
+  if (clocksToShow.length === 0) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Weather</h3>
+          <div className="text-center py-8">
+            <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+            <p className="text-gray-500 dark:text-gray-400">No weather locations selected</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500">Configure weather settings to display weather data</p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSettings(true)}
+              className="mt-3"
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Configure Weather
+            </Button>
           </div>
         </CardContent>
       </Card>

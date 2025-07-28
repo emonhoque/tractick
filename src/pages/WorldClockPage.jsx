@@ -192,6 +192,7 @@ export const WorldClockPage = () => {
                 clock={clock}
                 onEdit={handleEditClock}
                 onDelete={handleDeleteClock}
+                showMenuButton={true}
               />
             )
           ))}
