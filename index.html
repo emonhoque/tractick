@@ -15,6 +15,16 @@
       .loading { display: flex; align-items: center; justify-content: center; height: 100vh; }
       .loading-spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #d90c00; border-radius: 50%; animation: spin 1s linear infinite; }
       @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      
+      /* Critical layout styles to prevent CLS */
+      .weather-card { height: 128px; }
+      .weather-skeleton { height: 128px; }
+      .header-logo { width: 160px; height: 48px; }
+      .header-logo-mobile { width: 120px; height: 32px; }
+      
+      /* Critical theme styles */
+      .dark { color-scheme: dark; }
+      .light { color-scheme: light; }
     </style>
     <meta name="title" content="traktick - time zones made simple" />
     <meta name="description" content="A straightforward clock app designed to help you keep track of time with ease." />

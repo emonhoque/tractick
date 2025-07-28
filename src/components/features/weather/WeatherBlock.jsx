@@ -95,9 +95,23 @@ export const WeatherBlock = ({ clocks = [] }) => {
       <Card>
         <CardContent className="p-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Weather</h3>
-          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-            <span>Loading weather...</span>
+          <div className="space-y-4">
+            {/* Skeleton loader with fixed dimensions */}
+            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg weather-skeleton">
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-3">
+                <div className="w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                <div className="w-24 h-4 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                  <div>
+                    <div className="w-16 h-6 bg-gray-300 dark:bg-gray-600 rounded animate-pulse mb-1"></div>
+                    <div className="w-20 h-4 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -182,7 +196,7 @@ export const WeatherBlock = ({ clocks = [] }) => {
             // If no weather data for this clock, show a placeholder
             if (!weather) {
               return (
-                <div key={clock.id} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                <div key={clock.id} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg weather-card">
                   {/* Location */}
                   <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-3">
                     <MapPin className="h-4 w-4" />
@@ -225,7 +239,7 @@ export const WeatherBlock = ({ clocks = [] }) => {
             const windSpeed = Math.round(weather.wind.speed)
 
             return (
-              <div key={clock.id} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+              <div key={clock.id} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg weather-card">
                 {/* Location */}
                 <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-3">
                   <MapPin className="h-4 w-4" />

@@ -148,7 +148,9 @@ export const Header = ({ onAuthModalOpen }) => {
             <img 
               src={theme === 'dark' ? '/assets/header-logo-2-dark.webp' : '/assets/header-logo-2-light.webp'} 
               alt="TrakTick" 
-              className="h-12 w-auto object-contain max-w-full"
+              className="h-12 w-auto object-contain max-w-full header-logo"
+              width="160"
+              height="48"
             />
           </Link>
         </div>
@@ -334,7 +336,9 @@ export const Header = ({ onAuthModalOpen }) => {
                 <img 
                   src={theme === 'dark' ? '/assets/header-logo-2-dark.webp' : '/assets/header-logo-2-light.webp'} 
                   alt="TrakTick" 
-                  className="h-8 w-auto object-contain max-w-full"
+                  className="h-8 w-auto object-contain max-w-full header-logo-mobile"
+                  width="120"
+                  height="32"
                 />
               </Link>
               <Button
