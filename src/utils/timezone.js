@@ -192,28 +192,10 @@ export class TimezoneService {
       // Use provided date or current date
       const targetDate = date || new Date()
       
-      // Get the time in the target timezone as a string
-      const targetTimeString = targetDate.toLocaleString('en-US', {
-        timeZone: timezone,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      })
-      
-      // Parse the target time string
-      const [datePart, timePart] = targetTimeString.split(', ')
-      const [month, day, year] = datePart.split('/')
-      const [hour, minute, second] = timePart.split(':')
-      
-      // Create a Date object for the target timezone
-      const parsedTargetDate = new Date(year, month - 1, day, hour, minute, second)
-      
-      // Calculate the difference between UTC and target timezone
-      const offsetMs = parsedTargetDate.getTime() - targetDate.getTime()
+      // Use a more direct approach to calculate timezone offset
+      const utcTime = targetDate.getTime()
+      const targetTime = new Date(targetDate.toLocaleString('en-US', { timeZone: timezone }))
+      const offsetMs = targetTime.getTime() - utcTime
       
       return Math.round(offsetMs / 1000) // Convert to seconds
     } catch (error) {
