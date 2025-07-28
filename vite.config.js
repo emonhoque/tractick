@@ -120,7 +120,6 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks: {
             vendor: ['react', 'react-dom'],
-            firebase: ['firebase'],
             utils: ['date-fns', 'date-fns-tz', 'uuid'],
             ui: ['lucide-react', '@radix-ui/react-dropdown-menu', '@radix-ui/react-icons']
           }
