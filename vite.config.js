@@ -15,9 +15,12 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['assets/favicon.png'],
+        includeAssets: ['favicon.png'],
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
+          cleanupOutdatedCaches: true,
+          skipWaiting: true,
+          clientsClaim: true,
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/maps\.googleapis\.com\/.*/i,

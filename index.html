@@ -150,8 +150,8 @@
     <link rel="manifest" href="/manifest.webmanifest" />
     
     <!-- Preload critical resources -->
-    <link rel="preload" href="/assets/index.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="/assets/index.css" /></noscript>
+    <link rel="preload" href="/src/index.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="/src/index.css" /></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <meta name="theme-color" content="#d90c00" media="(prefers-color-scheme: light)" />
@@ -205,7 +205,7 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://maps.googleapis.com https://apis.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://firestore.googleapis.com https://api.openweathermap.org https://maps.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://accounts.google.com; frame-src 'self' https://accounts.google.com https://traktick-75160.firebaseapp.com; object-src 'none'; base-uri 'self'; form-action 'self';" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://maps.googleapis.com https://apis.google.com https://www.gstatic.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://firestore.googleapis.com https://api.openweathermap.org https://maps.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://accounts.google.com https://static.cloudflareinsights.com; frame-src 'self' https://accounts.google.com https://traktick-75160.firebaseapp.com; object-src 'none'; base-uri 'self'; form-action 'self';" />
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()" />
     
     <!-- Performance and Caching -->
@@ -301,20 +301,7 @@
         // Send to error tracking service silently
       });
       
-      // Development mode CSP override for better Firebase support
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        // Update CSP for development to allow Firebase auth
-        const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
-        if (cspMeta) {
-          const currentCSP = cspMeta.getAttribute('content');
-          // Add Firebase app domain and Google APIs to frame-src
-          const updatedCSP = currentCSP.replace(
-            'frame-src \'self\' https://accounts.google.com https://traktick-75160.firebaseapp.com',
-            'frame-src \'self\' https://accounts.google.com https://traktick-75160.firebaseapp.com https://apis.google.com https://*.firebaseapp.com'
-          );
-          cspMeta.setAttribute('content', updatedCSP);
-        }
-      }
+
     </script>
     
     <!-- Dynamic Theme Color Update -->

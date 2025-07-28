@@ -9,10 +9,7 @@ const STATIC_FILES = [
   '/index.html',
   '/manifest.webmanifest',
   '/browserconfig.xml',
-  '/src/main.jsx',
-  '/src/App.jsx',
-  '/src/index.css',
-  '/assets/favicon.png',
+  '/favicon.png',
   '/assets/header-logo-1.svg',
   '/assets/header-logo-2.svg',
   '/assets/screenshot-desktop.webp',
@@ -87,7 +84,8 @@ self.addEventListener('fetch', (event) => {
   // Skip external requests (except for essential APIs)
   if (!url.origin.includes(self.location.origin) && 
       !url.hostname.includes('firestore.googleapis.com') &&
-      !url.hostname.includes('api.openweathermap.org')) {
+      !url.hostname.includes('api.openweathermap.org') &&
+      !url.hostname.includes('maps.googleapis.com')) {
     return;
   }
   
