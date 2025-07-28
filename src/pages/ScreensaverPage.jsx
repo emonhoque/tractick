@@ -136,6 +136,9 @@ export const ScreensaverPage = () => {
     document.addEventListener('touchstart', handleActivity)
     document.addEventListener('scroll', handleActivity)
 
+    // Set up keyboard navigation
+    document.addEventListener('keydown', handleKeyDown)
+
     // Initial timer
     resetInactivityTimer()
 
@@ -145,6 +148,7 @@ export const ScreensaverPage = () => {
       document.removeEventListener('keydown', handleActivity)
       document.removeEventListener('touchstart', handleActivity)
       document.removeEventListener('scroll', handleActivity)
+      document.removeEventListener('keydown', handleKeyDown)
       
       if (inactivityTimeoutRef.current) {
         clearTimeout(inactivityTimeoutRef.current)
@@ -216,6 +220,28 @@ export const ScreensaverPage = () => {
   }
 
 
+
+  // Keyboard navigation handler
+  const handleKeyDown = (e) => {
+    if (clocks.length === 0) return
+
+    switch (e.key) {
+      case 'ArrowLeft':
+        e.preventDefault()
+        setShowAllLocations(false)
+        handlePrevious()
+        break
+      case 'ArrowRight':
+        e.preventDefault()
+        setShowAllLocations(false)
+        handleNext()
+        break
+      case 'Escape':
+        e.preventDefault()
+        navigate(ROUTES.HOME)
+        break
+    }
+  }
 
   // Touch handlers for swipe gestures
   const handleTouchStart = (e) => {
