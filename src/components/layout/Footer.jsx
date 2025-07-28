@@ -9,7 +9,7 @@ export const Footer = () => {
           <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
             <span>Made with</span>
             <Heart className="h-4 w-4 text-[#b91c1c] fill-current" />
-            <span>by <a href="https://emontofazzal.com" target="_blank" rel="noopener noreferrer" className="text-[#b91c1c] hover:underline">Emon</a></span>
+            <span>by <a href="https://emontofazzal.com" target="_blank" rel="noopener noreferrer" className="text-[#b91c1c] dark:text-white hover:underline">Emon</a></span>
             
           </div>
           <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400">

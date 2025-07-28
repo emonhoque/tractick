@@ -191,8 +191,8 @@ export const Header = ({ onAuthModalOpen }) => {
                     variant="ghost"
                     className={`flex items-center gap-1 text-sm font-semibold leading-6 transition-colors rounded-md px-3 py-2 ${
                       isActive || isOpen
-                        ? 'text-[#d90c00] bg-[#fef2f2] dark:bg-[#450a0a]'
-                        : 'text-gray-900 dark:text-gray-100 hover:text-[#d90c00] hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ? 'text-[#d90c00] bg-[#fef2f2] dark:bg-[#450a0a] dark:text-white'
+                        : 'text-gray-900 dark:text-gray-100 hover:text-[#ff4d4f] hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
                     {item.name}
@@ -242,8 +242,8 @@ export const Header = ({ onAuthModalOpen }) => {
                   to={item.href}
                   className={`text-sm font-semibold leading-6 transition-colors whitespace-nowrap flex-shrink-0 rounded-md px-3 py-2 ${
                     location.pathname === item.href
-                      ? 'text-[#d90c00] bg-[#fef2f2] dark:bg-[#450a0a]'
-                      : 'text-gray-900 dark:text-gray-100 hover:text-[#d90c00] hover:bg-gray-100 dark:hover:bg-gray-800'
+                      ? 'text-[#d90c00] bg-[#fef2f2] dark:bg-[#450a0a] dark:text-white hover:text-[#ff4d4f] dark:hover:text-[#ff4d4f]'
+                      : 'text-gray-900 dark:text-gray-100 hover:text-[#ff4d4f] hover:bg-gray-100 dark:hover:bg-gray-800'
                   }`}
                 >
                   {item.name}
