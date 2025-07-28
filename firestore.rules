@@ -1,0 +1,138 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can only access their own user document and subcollections
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null 
+        && request.auth.uid == userId 
+        && validateUserData(request.resource.data);
+
+      // World clocks: strict validation with comprehensive timezone data
+      match /clocks/{clockId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow create, update: if request.auth != null
+          && request.auth.uid == userId
+          && validateClockData(request.resource.data);
+      }
+
+      // Timer/stopwatch sessions: only owner can read/write with validation
+      match /sessions/{sessionId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow create, update: if request.auth != null
+          && request.auth.uid == userId
+          && validateSessionData(request.resource.data);
+      }
+
+      // User preferences: only owner can read/write with validation
+      match /preferences/{prefId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow create, update: if request.auth != null
+          && request.auth.uid == userId
+          && validatePreferencesData(request.resource.data);
+      }
+    }
+
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// Validate user data structure
+function validateUserData(data) {
+  return data.keys().hasAll(['uid', 'email']) &&
+    data.uid is string &&
+    data.email is string &&
+    data.uid.size() > 0 &&
+    data.email.size() > 0 &&
+    data.email.size() <= 254 &&
+    (data.name == null || (data.name is string && data.name.size() <= 100)) &&
+    (data.photoURL == null || (data.photoURL is string && data.photoURL.size() <= 500)) &&
+    (data.lastLogin == null || data.lastLogin is string);
+}
+
+// Validate clock data structure with comprehensive timezone support
+function validateClockData(data) {
+  return data.keys().hasAll([
+    'label', 'place', 'timezoneId', 'createdAt'
+  ]) &&
+    data.label is string &&
+    data.place is string &&
+    data.timezoneId is string &&
+    data.createdAt is timestamp &&
+    // Optional timezone fields
+    (data.country == null || data.country is string) &&
+    (data.offset == null || data.offset is number) &&
+    (data.utc_offset == null || data.utc_offset is string) &&
+    (data.abbreviation == null || data.abbreviation is string) &&
+    (data.country_name == null || data.country_name is string) &&
+    (data.timezone_name == null || data.timezone_name is string) &&
+    (data.dst == null || data.dst is bool) &&
+    (data.dst_from == null || data.dst_from is string) &&
+    (data.dst_until == null || data.dst_until is string) &&
+    (data.dst_offset == null || data.dst_offset is number) &&
+    (data.lastUpdated == null || data.lastUpdated is timestamp) &&
+    (data.dataSource == null || data.dataSource is string) &&
+    (data.order == null || data.order is number) &&
+    // Geometry data for weather API
+    (data.geometry == null || validateGeometryData(data.geometry)) &&
+    // String length limits
+    data.label.size() <= 100 &&
+    data.place.size() <= 200 &&
+    data.timezoneId.size() <= 100 &&
+    (data.country == null || data.country.size() <= 100) &&
+    (data.utc_offset == null || data.utc_offset.size() <= 10) &&
+    (data.abbreviation == null || data.abbreviation.size() <= 10) &&
+    (data.country_name == null || data.country_name.size() <= 100) &&
+    (data.timezone_name == null || data.timezone_name.size() <= 100) &&
+    (data.dst_from == null || data.dst_from.size() <= 50) &&
+    (data.dst_until == null || data.dst_until.size() <= 50) &&
+    (data.dataSource == null || data.dataSource.size() <= 50);
+}
+
+// Validate geometry data for weather API
+function validateGeometryData(geometry) {
+  return geometry is map &&
+    geometry.keys().hasAll(['lat', 'lng']) &&
+    geometry.lat is number &&
+    geometry.lng is number &&
+    geometry.lat >= -90 && geometry.lat <= 90 &&
+    geometry.lng >= -180 && geometry.lng <= 180;
+}
+
+// Validate session data structure for timers and stopwatches
+function validateSessionData(data) {
+  return data.keys().hasAll([
+    'duration', 'createdAt', 'type'
+  ]) &&
+    data.duration is number &&
+    data.duration >= 0 &&
+    data.duration <= 31536000 && // Max 1 year in seconds
+    data.createdAt is timestamp &&
+    data.type is string &&
+    (data.type == 'timer' || data.type == 'stopwatch') &&
+    // Timer-specific fields
+    (data.type != 'timer' || (
+      (data.originalDuration == null || (data.originalDuration is number && data.originalDuration >= 0)) &&
+      (data.elapsedTime == null || (data.elapsedTime is number && data.elapsedTime >= 0)) &&
+      (data.completed == null || data.completed is bool)
+    )) &&
+    // Stopwatch-specific fields
+    (data.type != 'stopwatch' || (
+      (data.laps == null || (
+        data.laps is list &&
+        data.laps.size() <= 100 // Max 100 laps
+      ))
+    ));
+}
+
+// Validate preferences data structure
+function validatePreferencesData(data) {
+  return data.keys().hasAll([
+    'weatherLocations'
+  ]) &&
+    data.weatherLocations is list &&
+    data.weatherLocations.size() <= 10; // Limit to 10 locations max
+}

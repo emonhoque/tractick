@@ -1,0 +1,113 @@
+{
+  "name": "traktick - time zones made simple",
+  "short_name": "traktick",
+  "description": "A straightforward clock app designed to help you keep track of time with ease.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#d90c00",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/android/android-launchericon-48-48.webp",
+      "sizes": "48x48",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android/android-launchericon-72-72.webp",
+      "sizes": "72x72",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android/android-launchericon-96-96.webp",
+      "sizes": "96x96",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android/android-launchericon-144-144.webp",
+      "sizes": "144x144",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android/android-launchericon-192-192.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android/android-launchericon-512-512.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/ios/180.webp",
+      "sizes": "180x180",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "/ios/167.webp",
+      "sizes": "167x167",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "/ios/152.webp",
+      "sizes": "152x152",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "/ios/120.webp",
+      "sizes": "120x120",
+      "type": "image/webp",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Stopwatch",
+      "short_name": "Stopwatch",
+      "description": "Start the stopwatch",
+      "url": "/stopwatch",
+      "icons": [
+        {
+          "src": "/android/android-launchericon-96-96.webp",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Timer",
+      "short_name": "Timer",
+      "description": "Set a timer",
+      "url": "/timer",
+      "icons": [
+        {
+          "src": "/android/android-launchericon-96-96.webp",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "World Clock",
+      "short_name": "World Clock",
+      "description": "View world clocks",
+      "url": "/world-clock",
+      "icons": [
+        {
+          "src": "/android/android-launchericon-96-96.webp",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

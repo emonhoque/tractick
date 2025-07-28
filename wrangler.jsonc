@@ -1,0 +1,21 @@
+{
+  "name": "traktick",
+  "compatibility_date": "2025-01-21",
+  "main": "./dist/index.html",
+  "assets": {
+    "directory": "./dist",
+    "include": ["**/*"],
+    "exclude": [
+      "**/*.map",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "site": {
+    "bucket": "./dist"
+  },
+  "env": {
+    "VITE_APP_NAME": "traktick",
+    "VITE_APP_VERSION": "1.0.0"
+  }
+}
