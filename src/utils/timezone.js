@@ -1,5 +1,6 @@
 // Enhanced Timezone Service using Google's Time Zone API
 import { API_KEYS } from '../constants'
+import { TIMEZONE_DATABASE, TimezoneDatabase } from './timezoneDatabase'
 
 
 // Cache for API responses to reduce rate limiting
@@ -91,9 +92,68 @@ export class TimezoneService {
         return timezoneData
         
       } catch (fetchError) {
-        // API failed, return null silently
-        return null
+        // API failed, try fallback database
+        return this.getFallbackTimezoneFromCoordinates(lat, lng)
       }
+    } catch (error) {
+      // Try fallback database
+      return this.getFallbackTimezoneFromCoordinates(lat, lng)
+    }
+  }
+
+  // Fallback method using timezone database
+  static getFallbackTimezoneFromCoordinates(lat, lng) {
+    try {
+      // Estimate timezone from coordinates using the database
+      const estimatedTimezone = TimezoneDatabase.estimateTimezoneFromCoordinates(lat, lng)
+      
+      if (estimatedTimezone) {
+        const timezoneInfo = TIMEZONE_DATABASE[estimatedTimezone]
+        if (timezoneInfo) {
+          return {
+            timezone: estimatedTimezone,
+            raw_offset: timezoneInfo.offset,
+            utc_offset: timezoneInfo.offsetFormatted,
+            abbreviation: timezoneInfo.abbreviation,
+            timezone_name: timezoneInfo.name,
+            dst: timezoneInfo.dst,
+            lastUpdated: new Date()
+          }
+        }
+      }
+      
+      return null
+    } catch (error) {
+      return null
+    }
+  }
+
+  // Get timezone by city name using fallback database
+  static getTimezoneByCityName(cityName) {
+    try {
+      if (!cityName) return null
+      
+      // Search for the city in the timezone database
+      const searchResults = TimezoneDatabase.searchTimezones(cityName)
+      
+      if (searchResults && searchResults.length > 0) {
+        const bestMatch = searchResults[0]
+        const timezoneInfo = TIMEZONE_DATABASE[bestMatch.timezone]
+        
+        if (timezoneInfo) {
+          return {
+            timezone: bestMatch.timezone,
+            raw_offset: timezoneInfo.offset,
+            utc_offset: timezoneInfo.offsetFormatted,
+            abbreviation: timezoneInfo.abbreviation,
+            timezone_name: timezoneInfo.name,
+            dst: timezoneInfo.dst,
+            lastUpdated: new Date()
+          }
+        }
+      }
+      
+      return null
     } catch (error) {
       return null
     }

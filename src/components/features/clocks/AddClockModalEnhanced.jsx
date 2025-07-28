@@ -323,16 +323,45 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
     setSearchQuery(place.name || place.formatted_address)
     setSearchResults([])
     
-    // Disable timezone API calls to prevent REQUEST_DENIED errors
-    // The app will work without timezone data for now
-    setSelectedCity({
-      ...place,
-      timezone: null,
-      offset: null,
-      utc_offset: null,
-      abbreviation: null,
-      timezone_name: null
-    })
+    // Get timezone data for the selected place
+    if (place.geometry?.location) {
+      try {
+        const timezoneData = await TimezoneService.getTimezoneFromCoordinates(
+          place.geometry.location.lat,
+          place.geometry.location.lng
+        )
+        
+        setSelectedCity({
+          ...place,
+          timezone: timezoneData?.timezone || null,
+          offset: timezoneData?.raw_offset || null,
+          utc_offset: timezoneData?.utc_offset || null,
+          abbreviation: timezoneData?.abbreviation || null,
+          timezone_name: timezoneData?.timezone_name || null
+        })
+      } catch (error) {
+        // Try fallback by city name
+        const fallbackTimezoneData = TimezoneService.getTimezoneByCityName(place.name)
+        
+        setSelectedCity({
+          ...place,
+          timezone: fallbackTimezoneData?.timezone || null,
+          offset: fallbackTimezoneData?.raw_offset || null,
+          utc_offset: fallbackTimezoneData?.utc_offset || null,
+          abbreviation: fallbackTimezoneData?.abbreviation || null,
+          timezone_name: fallbackTimezoneData?.timezone_name || null
+        })
+      }
+    } else {
+      setSelectedCity({
+        ...place,
+        timezone: null,
+        offset: null,
+        utc_offset: null,
+        abbreviation: null,
+        timezone_name: null
+      })
+    }
   }
 
   // Enhanced function to get complete timezone data for caching
@@ -355,8 +384,52 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
         }
       }
       
-      // Disable timezone API calls to prevent REQUEST_DENIED errors
-      // Return null for now - the app will work without timezone data
+      // Try to get timezone data from coordinates if available
+      if (cityData.geometry?.location) {
+        const timezoneData = await TimezoneService.getTimezoneFromCoordinates(
+          cityData.geometry.location.lat,
+          cityData.geometry.location.lng
+        )
+        
+        if (timezoneData) {
+          return {
+            timezone: timezoneData.timezone,
+            offset: timezoneData.raw_offset || 0,
+            utc_offset: timezoneData.utc_offset || '+00:00',
+            abbreviation: timezoneData.abbreviation || 'UTC',
+            country_name: cityData.country || 'Unknown',
+            timezone_name: timezoneData.timezone_name || timezoneData.timezone,
+            dst: timezoneData.dst || false,
+            dst_from: null,
+            dst_until: null,
+            dst_offset: timezoneData.dst_offset || timezoneData.raw_offset || 0,
+            lastUpdated: new Date()
+          }
+        }
+      }
+      
+      // Try to get timezone data by city name as fallback
+      if (cityData.name) {
+        const timezoneData = TimezoneService.getTimezoneByCityName(cityData.name)
+        
+        if (timezoneData) {
+          return {
+            timezone: timezoneData.timezone,
+            offset: timezoneData.raw_offset || 0,
+            utc_offset: timezoneData.utc_offset || '+00:00',
+            abbreviation: timezoneData.abbreviation || 'UTC',
+            country_name: cityData.country || 'Unknown',
+            timezone_name: timezoneData.timezone_name || timezoneData.timezone,
+            dst: timezoneData.dst || false,
+            dst_from: null,
+            dst_until: null,
+            dst_offset: timezoneData.dst_offset || timezoneData.raw_offset || 0,
+            lastUpdated: new Date()
+          }
+        }
+      }
+      
+      // Return null if no timezone data available
       return null
     } catch (error) {
       // API failed, return null
