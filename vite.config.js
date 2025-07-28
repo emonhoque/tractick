@@ -16,8 +16,16 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.png'],
+        injectRegister: 'auto',
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
+          globIgnores: [
+            '**/android/**', 
+            '**/ios/**', 
+            '**/windows11/**', 
+            '**/splash_screens/**',
+            '**/1x/**'
+          ],
           cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
@@ -57,59 +65,7 @@ export default defineConfig(({ mode }) => {
           scope: '/',
           orientation: 'portrait-primary',
           lang: 'en',
-          categories: ['productivity', 'utilities'],
-          icons: [
-            {
-              src: '/assets/android/android-launchericon-192-192.webp',
-              sizes: '192x192',
-              type: 'image/webp',
-              purpose: 'any maskable'
-            },
-            {
-              src: '/assets/android/android-launchericon-512-512.webp',
-              sizes: '512x512',
-              type: 'image/webp',
-              purpose: 'any maskable'
-            }
-          ],
-          shortcuts: [
-            {
-              name: 'Stopwatch',
-              short_name: 'Stopwatch',
-              description: 'Start the stopwatch',
-              url: '/stopwatch',
-              icons: [
-                {
-                  src: '/assets/android/android-launchericon-96-96.webp',
-                  sizes: '96x96'
-                }
-              ]
-            },
-            {
-              name: 'Timer',
-              short_name: 'Timer',
-              description: 'Set a timer',
-              url: '/timer',
-              icons: [
-                {
-                  src: '/assets/android/android-launchericon-96-96.webp',
-                  sizes: '96x96'
-                }
-              ]
-            },
-            {
-              name: 'World Clock',
-              short_name: 'World Clock',
-              description: 'View world clocks',
-              url: '/world-clock',
-              icons: [
-                {
-                  src: '/assets/android/android-launchericon-96-96.webp',
-                  sizes: '96x96'
-                }
-              ]
-            }
-          ]
+          categories: ['productivity', 'utilities']
         }
       })
     ],

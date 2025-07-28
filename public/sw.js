@@ -13,27 +13,7 @@ const STATIC_FILES = [
   '/assets/header-logo-1.svg',
   '/assets/header-logo-2.svg',
   '/assets/screenshot-desktop.webp',
-  '/assets/screenshot-mobile.webp',
-  // Android icons
-  '/assets/android/android-launchericon-48-48.webp',
-  '/assets/android/android-launchericon-72-72.webp',
-  '/assets/android/android-launchericon-96-96.webp',
-  '/assets/android/android-launchericon-144-144.webp',
-  '/assets/android/android-launchericon-192-192.webp',
-  '/assets/android/android-launchericon-512-512.webp',
-  // iOS icons
-  '/assets/ios/180.webp',
-  '/assets/ios/167.webp',
-  '/assets/ios/152.webp',
-  '/assets/ios/120.webp',
-  '/assets/ios/1024.webp',
-  '/assets/ios/512.webp',
-  // Windows icons
-  '/assets/windows11/Square150x150Logo.scale-100.webp',
-  '/assets/windows11/Square150x150Logo.scale-125.webp',
-  '/assets/windows11/Square150x150Logo.scale-150.webp',
-  '/assets/windows11/Square150x150Logo.scale-200.webp',
-  '/assets/windows11/Square150x150Logo.scale-400.webp'
+  '/assets/screenshot-mobile.webp'
 ];
 
 // Install event - cache static files
@@ -97,7 +77,11 @@ self.addEventListener('fetch', (event) => {
     // JS/CSS files - cache first, fallback to network
     event.respondWith(cacheFirst(request));
   } else if (request.destination === 'image') {
-    // Images - cache first, fallback to network
+    // Images - cache first, fallback to network, but skip icon conflicts
+    if (url.pathname.includes('/assets/android/') || url.pathname.includes('/assets/ios/') || url.pathname.includes('/assets/windows11/')) {
+      // Skip caching platform-specific icons to avoid conflicts
+      return;
+    }
     event.respondWith(cacheFirst(request));
   } else {
     // Other requests - network first, fallback to cache
