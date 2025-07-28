@@ -182,19 +182,40 @@ export class TimezoneService {
   }
 
   // Get timezone offset for a timezone (local calculation)
-  static getTimezoneOffset(timezone) {
+  static getTimezoneOffset(timezone, date = null) {
     try {
       // Handle null or undefined timezone
       if (!timezone) {
         return 0
       }
 
-      const now = new Date()
-      const utc = now.getTime() + (now.getTimezoneOffset() * 60000)
-      const targetTime = new Date(utc + (0 * 60000))
-      const targetOffset = targetTime.getTimezoneOffset()
+      // Use provided date or current date
+      const targetDate = date || new Date()
       
-      return -targetOffset * 60 // Convert to seconds
+      // Get the time in the target timezone as a string
+      const targetTimeString = targetDate.toLocaleString('en-US', {
+        timeZone: timezone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      })
+      
+      // Parse the target time string
+      const [datePart, timePart] = targetTimeString.split(', ')
+      const [month, day, year] = datePart.split('/')
+      const [hour, minute, second] = timePart.split(':')
+      
+      // Create a Date object for the target timezone
+      const parsedTargetDate = new Date(year, month - 1, day, hour, minute, second)
+      
+      // Calculate the difference between UTC and target timezone
+      const offsetMs = parsedTargetDate.getTime() - targetDate.getTime()
+      
+      return Math.round(offsetMs / 1000) // Convert to seconds
     } catch (error) {
       return 0
     }
@@ -224,13 +245,17 @@ export class TimezoneService {
       }
 
       const now = new Date()
+      
+      // Get offsets for January and July in the target timezone
       const jan = new Date(now.getFullYear(), 0, 1)
       const jul = new Date(now.getFullYear(), 6, 1)
       
-      const janOffset = jan.getTimezoneOffset()
-      const julOffset = jul.getTimezoneOffset()
+      const janOffset = this.getTimezoneOffset(timezone, jan)
+      const julOffset = this.getTimezoneOffset(timezone, jul)
+      const currentOffset = this.getTimezoneOffset(timezone, now)
       
-      return Math.max(janOffset, julOffset) !== now.getTimezoneOffset()
+      // DST is active if current offset is greater than the minimum offset
+      return currentOffset > Math.min(janOffset, julOffset)
     } catch (error) {
       return false
     }
