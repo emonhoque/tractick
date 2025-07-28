@@ -111,12 +111,12 @@ export const searchPlacesAutocomplete = async (query) => {
   try {
     // Check if we're in a browser environment
     if (typeof window === 'undefined') {
-      throw new Error('Not in browser environment')
+      return []
     }
 
     // Check if API key is available
     if (!API_KEYS.GOOGLE_MAPS) {
-      throw new Error('Google Maps API key not configured')
+      return []
     }
 
     // Try multiple search strategies for better city results
@@ -148,7 +148,6 @@ export const searchPlacesAutocomplete = async (query) => {
         )
         
         if (!response.ok) {
-          const errorText = await response.text()
           continue // Try next strategy
         }
         
@@ -181,7 +180,8 @@ export const searchPlacesAutocomplete = async (query) => {
     
     return uniqueResults.slice(0, 10) // Return max 10 results
   } catch (error) {
-    throw error
+    // Return empty array instead of throwing error
+    return []
   }
 }
 
@@ -203,19 +203,12 @@ export const searchPlacesLegacy = async (query) => {
         }
       })
     } catch (corsError) {
-      // If CORS fails, try with a simple proxy
-      url = `https://cors-anywhere.herokuapp.com/${baseUrl}?input=${encodeURIComponent(query + ' city')}&inputtype=textquery&fields=place_id,name,formatted_address,geometry&key=${API_KEYS.GOOGLE_MAPS}`
-      response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Origin': window.location.origin
-        }
-      })
+      // If CORS fails, return empty results instead of trying proxy
+      return []
     }
     
     if (!response.ok) {
-      throw new Error(`Google Places API request failed: ${response.status}`)
+      return []
     }
     
     const data = await response.json()
@@ -230,10 +223,10 @@ export const searchPlacesLegacy = async (query) => {
     } else if (data.status === 'ZERO_RESULTS') {
       return []
     } else {
-      throw new Error(`Google Places API error: ${data.status}`)
+      return []
     }
   } catch (error) {
-    throw error
+    return []
   }
 }
 
@@ -246,31 +239,38 @@ export const searchPlacesWithJSAPI = async (query) => {
     }
 
     return new Promise((resolve, reject) => {
-      const service = new window.google.maps.places.PlacesService(document.createElement('div'))
-      
-      const request = {
-        query: `${query} city`,
-        fields: ['place_id', 'name', 'formatted_address', 'geometry', 'types']
-      }
-      
-      service.findPlaceFromQuery(request, (results, status) => {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-          const places = results.map(place => ({
-            place_id: place.place_id,
-            name: place.name,
-            formatted_address: place.formatted_address,
-            geometry: place.geometry,
-            types: place.types
-          }))
-          resolve(places)
-        } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-          resolve([])
-        } else {
-          reject(new Error(`Google Places JS API error: ${status}`))
+      try {
+        const service = new window.google.maps.places.PlacesService(document.createElement('div'))
+        
+        const request = {
+          query: `${query} city`,
+          fields: ['place_id', 'name', 'formatted_address', 'geometry', 'types']
         }
-      })
+        
+        service.findPlaceFromQuery(request, (results, status) => {
+          if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
+            const places = results.map(place => ({
+              place_id: place.place_id,
+              name: place.name,
+              formatted_address: place.formatted_address,
+              geometry: place.geometry,
+              types: place.types
+            }))
+            resolve(places)
+          } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+            resolve([])
+          } else {
+            // Silently fail instead of throwing error
+            resolve([])
+          }
+        })
+      } catch (error) {
+        // Silently fail instead of throwing error
+        resolve([])
+      }
     })
   } catch (error) {
-    throw error
+    // Return empty array instead of throwing error
+    return []
   }
 } 

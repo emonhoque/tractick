@@ -1,11 +1,9 @@
-// vite.config.js
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig(({ mode }) => {
-  // Load env file based on mode
   const env = loadEnv(mode, process.cwd(), '')
   const isProduction = mode === 'production'
   
@@ -30,17 +28,6 @@ export default defineConfig(({ mode }) => {
           skipWaiting: true,
           clientsClaim: true,
           runtimeCaching: [
-            {
-              urlPattern: /^https:\/\/maps\.googleapis\.com\/.*/i,
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'google-maps-cache',
-                expiration: {
-                  maxEntries: 10,
-                  maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-                }
-              }
-            },
             {
               urlPattern: /^https:\/\/api\.openweathermap\.org\/.*/i,
               handler: 'NetworkFirst',
@@ -88,13 +75,12 @@ export default defineConfig(({ mode }) => {
         compress: {
           drop_console: true,
           drop_debugger: true,
-          pure_funcs: ['console.log', 'console.info', 'console.debug']
+          pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn', 'console.error']
         }
       }
     },
 
     define: {
-      // Make environment variables available to the client
       'process.env.VITE_FIREBASE_API_KEY': JSON.stringify(env.VITE_FIREBASE_API_KEY),
       'process.env.VITE_FIREBASE_AUTH_DOMAIN': JSON.stringify(env.VITE_FIREBASE_AUTH_DOMAIN),
       'process.env.VITE_FIREBASE_PROJECT_ID': JSON.stringify(env.VITE_FIREBASE_PROJECT_ID),
@@ -107,7 +93,7 @@ export default defineConfig(({ mode }) => {
     },
     
     server: {
-      host: '0.0.0.0', // Bind to all interfaces
+      host: '0.0.0.0',
       port: 5173,
       hmr: {
         port: 5173,

@@ -25,15 +25,9 @@ export const WeatherBlock = ({ clocks = [] }) => {
   const clocksToShow = useMemo(() => {
     if (!clocks || clocks.length === 0) return []
     
-    if (preferences.weatherLocations && preferences.weatherLocations.length > 0) {
-      // Filter clocks based on user preferences
-      return clocks.filter(clock => 
-        preferences.weatherLocations.includes(clock.id)
-      ).slice(0, 2) // Still limit to 2 for display
-    } else {
-      // Default to first 2 clocks if no preferences set
-      return clocks.slice(0, 2)
-    }
+    // Always show first 2 clocks for weather display
+    const defaultClocks = clocks.slice(0, 2)
+    return defaultClocks
   }, [clocks, preferences.weatherLocations])
 
   // Use a ref to store the current clocksToShow to avoid dependency issues
@@ -47,7 +41,7 @@ export const WeatherBlock = ({ clocks = [] }) => {
     try {
       await fetchWeatherForLocations(clocksToShow, false, forceRefresh)
     } catch (err) {
-      
+      // Silent fail
     }
   }, [clocksToShow, fetchWeatherForLocations])
 
@@ -106,7 +100,7 @@ export const WeatherBlock = ({ clocks = [] }) => {
   }
 
   // Show loading state if no clocks are selected for weather display
-  if (clocksToShow.length === 0) {
+  if (clocksToShow.length === 0 && clocks && clocks.length > 0) {
     return (
       <Card>
         <CardContent className="p-6">
@@ -169,7 +163,8 @@ export const WeatherBlock = ({ clocks = [] }) => {
         <div className="space-y-4">
           {clocksToShow.map((clock, index) => {
             // Get weather data from global cache
-            const locationKey = clock.geometry?.location ? clock.geometry.location : { lat: clock.place, lng: clock.country }
+            // Use place name for weather lookup since geometry might not be available
+            const locationKey = clock.geometry?.location ? clock.geometry.location : clock.place
             const weather = getWeatherData(locationKey, clock.country)
             const loading = isLoading(locationKey, clock.country)
             const error = getError(locationKey, clock.country)

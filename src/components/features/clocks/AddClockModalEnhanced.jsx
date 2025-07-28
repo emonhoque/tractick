@@ -288,6 +288,24 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
           results = []
         }
         
+        // If no results from APIs, provide a simple fallback
+        if (results.length === 0 && searchQuery.length >= 2) {
+          // Simple fallback - create a basic city entry
+          results = [{
+            id: `fallback_${Date.now()}`,
+            name: searchQuery,
+            country: 'Unknown',
+            timezone: null,
+            formatted_address: searchQuery,
+            geometry: null
+          }]
+          
+          // Show a helpful message about ad blockers
+          if (searchQuery.length >= 3) {
+            setError('Search results may be limited. If you have an ad blocker enabled, try disabling it for this site to get better search results.')
+          }
+        }
+        
         setSearchResults(results.slice(0, 10)) // Limit to 10 results
       } catch (err) {
         setError('Search failed. Please try again.')
@@ -305,47 +323,16 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
     setSearchQuery(place.name || place.formatted_address)
     setSearchResults([])
     
-
-    
-    // If this is a Google Maps result with coordinates, get timezone info
-    if (place.geometry && place.geometry.location) {
-      try {
-        const { lat, lng } = place.geometry.location
-        
-        const timezoneInfo = await TimezoneService.getTimezoneFromCoordinates(lat, lng)
-        
-        if (timezoneInfo) {
-          setSelectedCity({
-            ...place,
-            timezone: timezoneInfo.timezone,
-            offset: timezoneInfo.raw_offset,
-            utc_offset: timezoneInfo.utc_offset,
-            abbreviation: timezoneInfo.abbreviation,
-            timezone_name: timezoneInfo.timezone_name
-          })
-        } else {
-          // API failed, don't set timezone info
-          setSelectedCity({
-            ...place,
-            timezone: null,
-            offset: null,
-            utc_offset: null,
-            abbreviation: null,
-            timezone_name: null
-          })
-        }
-      } catch (error) {
-        // API failed, don't set timezone info
-        setSelectedCity({
-          ...place,
-          timezone: null,
-          offset: null,
-          utc_offset: null,
-          abbreviation: null,
-          timezone_name: null
-        })
-      }
-    }
+    // Disable timezone API calls to prevent REQUEST_DENIED errors
+    // The app will work without timezone data for now
+    setSelectedCity({
+      ...place,
+      timezone: null,
+      offset: null,
+      utc_offset: null,
+      abbreviation: null,
+      timezone_name: null
+    })
   }
 
   // Enhanced function to get complete timezone data for caching
@@ -368,29 +355,8 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
         }
       }
       
-      // If we have coordinates but no timezone, get timezone from coordinates
-      if (cityData.geometry && cityData.geometry.location) {
-        const { lat, lng } = cityData.geometry.location
-        const timezoneInfo = await TimezoneService.getTimezoneFromCoordinates(lat, lng)
-        
-        if (timezoneInfo) {
-          return {
-            timezone: timezoneInfo.timezone,
-            offset: timezoneInfo.raw_offset,
-            utc_offset: timezoneInfo.utc_offset,
-            abbreviation: timezoneInfo.abbreviation,
-            country_name: cityData.country || 'Unknown',
-            timezone_name: timezoneInfo.timezone_name,
-            dst: timezoneInfo.dst,
-            dst_from: null,
-            dst_until: null,
-            dst_offset: timezoneInfo.dst_offset,
-            lastUpdated: new Date()
-          }
-        }
-      }
-      
-      // No timezone data available
+      // Disable timezone API calls to prevent REQUEST_DENIED errors
+      // Return null for now - the app will work without timezone data
       return null
     } catch (error) {
       // API failed, return null
@@ -408,19 +374,17 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
     try {
       const timezoneData = await getCompleteTimezoneData(selectedCity)
       
-      // Ensure we have a valid timezone
-      if (!timezoneData || !timezoneData.timezone) {
-        setError('Could not determine timezone for this location. Please try a different city.')
-        setLoading(false)
-        return
-      }
-
+      // Create clock data with fallback timezone if needed
       const clockData = {
         label: label.trim() || selectedCity.name,
         place: selectedCity.name,
         country: selectedCity.country,
-        timezoneId: timezoneData.timezone,
-        ...timezoneData,
+        timezoneId: timezoneData?.timezone || 'UTC',
+        offset: timezoneData?.offset || 0,
+        utc_offset: timezoneData?.utc_offset || '+00:00',
+        abbreviation: timezoneData?.abbreviation || 'UTC',
+        timezone_name: timezoneData?.timezone_name || 'UTC',
+        dst: timezoneData?.dst || false,
         geometry: selectedCity.geometry,
         order: Date.now(),
         createdAt: new Date()

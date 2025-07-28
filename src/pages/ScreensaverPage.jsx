@@ -267,7 +267,6 @@ export const ScreensaverPage = () => {
 
   const totalClocks = clocks.length
 
-  // Function to calculate appropriate font size
   const calculateFontSize = () => {
     if (!timeDisplayRef.current) return
 

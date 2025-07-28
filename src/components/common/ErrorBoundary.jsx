@@ -56,7 +56,7 @@ class ErrorBoundary extends React.Component {
                 </Button>
               </div>
 
-              {/* Remove development error details, keep only the message and email */}
+
             </div>
           </div>
         </div>

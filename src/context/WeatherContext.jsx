@@ -224,7 +224,8 @@ export const WeatherProvider = ({ children }) => {
   const fetchWeatherForLocations = useCallback(async (locations, includeForecast = false, forceRefresh = false) => {
     const promises = locations.map(async (location) => {
       const { place, country, geometry } = location
-      const locationKey = geometry?.location ? geometry.location : { lat: place, lng: country }
+      // Use place name for weather lookup since geometry might not be available
+      const locationKey = geometry?.location ? geometry.location : place
       
       try {
         const currentWeather = await fetchCurrentWeather(locationKey, country, forceRefresh)

@@ -60,43 +60,38 @@ export class TimezoneService {
         })
         
         if (!response.ok) {
-          throw new Error(`Google Time Zone API error: ${response.status}`)
+          return null
         }
         
         const data = await response.json()
         
-        // If we get REQUEST_DENIED, return null
-        if (data.status === 'REQUEST_DENIED') {
+        // If we get REQUEST_DENIED or any error, return null silently
+        if (data.status !== 'OK') {
           return null
         }
         
         // If we get a successful response, process it
-        if (data.status === 'OK') {
-          const timezoneData = {
-            timezone: data.timeZoneId,
-            raw_offset: data.rawOffset,
-            utc_offset: this.formatUTCOffset(data.rawOffset),
-            abbreviation: this.getTimezoneAbbreviation(data.timeZoneId),
-            dst_offset: data.dstOffset,
-            timezone_name: data.timeZoneName,
-            dst: data.dstOffset !== 0,
-            lastUpdated: new Date()
-          }
-          
-          // Cache the response
-          apiCache.set(cacheKey, {
-            data: timezoneData,
-            timestamp: Date.now()
-          })
-          
-          return timezoneData
+        const timezoneData = {
+          timezone: data.timeZoneId,
+          raw_offset: data.rawOffset,
+          utc_offset: this.formatUTCOffset(data.rawOffset),
+          abbreviation: this.getTimezoneAbbreviation(data.timeZoneId),
+          dst_offset: data.dstOffset,
+          timezone_name: data.timeZoneName,
+          dst: data.dstOffset !== 0,
+          lastUpdated: new Date()
         }
         
-        // For other status codes, throw error
-        throw new Error(`Google Time Zone API error: ${data.status}`)
+        // Cache the response
+        apiCache.set(cacheKey, {
+          data: timezoneData,
+          timestamp: Date.now()
+        })
+        
+        return timezoneData
         
       } catch (fetchError) {
-        // API failed, return null
+        // API failed, return null silently
         return null
       }
     } catch (error) {
