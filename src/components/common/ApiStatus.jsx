@@ -22,38 +22,38 @@ export const ApiStatus = () => {
       </span>
       
       {/* Custom tooltip */}
-      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-        <div className="flex items-center gap-2 mb-2">
-          <Info className="h-3 w-3" />
-          <span className="font-medium">API Status</span>
+      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 px-4 py-3 bg-gray-900 text-white text-xs rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 min-w-[220px] border border-gray-700">
+        <div className="flex items-center gap-2 mb-3">
+          <Info className="h-4 w-4 text-blue-300" />
+          <span className="font-semibold text-base text-white">API Status</span>
         </div>
-        <div className="space-y-1 text-gray-300">
-          <div className="flex items-center gap-2">
+        <ul className="space-y-2 text-gray-200">
+          <li className="flex items-center gap-2">
             {isFirebaseConfigured ? (
-              <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+              <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
             ) : (
-              <XCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
+              <XCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
             )}
-            <span>Firebase - {isFirebaseConfigured ? 'Configured' : 'Not configured'}</span>
-          </div>
-          <div className="flex items-center gap-2">
+            <span>Firebase - <span className={isFirebaseConfigured ? 'text-green-300' : 'text-red-300'}>{isFirebaseConfigured ? 'Configured' : 'Not configured'}</span></span>
+          </li>
+          <li className="flex items-center gap-2">
             {isGoogleMapsAvailable ? (
-              <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+              <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
             ) : (
-              <XCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
+              <XCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
             )}
-            <span>Google Places - {isGoogleMapsAvailable ? 'Configured' : 'Not configured'}</span>
-          </div>
-          <div className="flex items-center gap-2">
+            <span>Google Places - <span className={isGoogleMapsAvailable ? 'text-green-300' : 'text-red-300'}>{isGoogleMapsAvailable ? 'Configured' : 'Not configured'}</span></span>
+          </li>
+          <li className="flex items-center gap-2">
             {isOpenWeatherAvailable ? (
-              <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+              <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
             ) : (
-              <XCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
+              <XCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
             )}
-            <span>OpenWeather - {isOpenWeatherAvailable ? 'Configured' : 'Not configured'}</span>
-          </div>
-        </div>
-        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+            <span>OpenWeather - <span className={isOpenWeatherAvailable ? 'text-green-300' : 'text-red-300'}>{isOpenWeatherAvailable ? 'Configured' : 'Not configured'}</span></span>
+          </li>
+        </ul>
+        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-900"></div>
       </div>
     </div>
   )
