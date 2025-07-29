@@ -13,6 +13,8 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
+    // Log generic error for debugging (no sensitive data)
+    console.error('Error caught by boundary - Component:', errorInfo.componentStack?.split('\n')[1]?.trim() || 'Unknown component');
     this.setState({
       error: error,
       errorInfo: errorInfo

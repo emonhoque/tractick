@@ -45,7 +45,7 @@ export const searchPlaces = async (query) => {
     )
     
     if (!response.ok) {
-      throw new Error(`Places API (New) request failed: ${response.status}`)
+              throw new Error(`Location service error: ${response.status}`)
     }
     
     const data = await response.json()
@@ -84,7 +84,7 @@ export const getPlaceDetails = async (placeId) => {
     )
     
     if (!response.ok) {
-      throw new Error(`Places API (New) details request failed: ${response.status}`)
+              throw new Error(`Location service error: ${response.status}`)
     }
     
     const data = await response.json()

@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useEffect } from 'react'
 import { Cloud, CloudRain, CloudSnow, Sun, Cloudy, Wind } from 'lucide-react'
-import { getWeatherIcon, formatTemperature, formatHumidity, formatWindSpeed } from '../../../utils/weather'
+import { formatTemperature, formatHumidity, formatWindSpeed } from '../../../utils/weather'
 import { useApiKeys } from '../../../hooks/useApiKeys'
 import { useWeather } from '../../../context/WeatherContext'
 
-export const WeatherDisplay = ({ city, country, timezoneId }) => {
+export const WeatherDisplay = ({ city, country }) => {
   const { isOpenWeatherAvailable } = useApiKeys()
   const { 
     fetchCurrentWeather, 

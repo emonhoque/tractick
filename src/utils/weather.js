@@ -116,10 +116,10 @@ const getOrCreateRequest = (key, fetchFunction) => {
 // Check if OpenWeather API key is available
 const checkApiKey = () => {
   if (!API_KEYS.OPENWEATHER) {
-    throw new Error('OpenWeather API key is not configured')
+    throw new Error('Weather service not configured')
   }
   if (API_KEYS.OPENWEATHER === 'your_openweather_api_key' || API_KEYS.OPENWEATHER === '') {
-    throw new Error('OpenWeather API key is not set properly')
+    throw new Error('Weather service not configured')
   }
 }
 
@@ -143,8 +143,7 @@ export const getCurrentWeather = async (city, countryCode = '') => {
         clearTimeout(timeoutId)
         
         if (!response.ok) {
-          const errorText = await response.text()
-          throw new Error(`Weather API error: ${response.status} - ${errorText}`)
+          throw new Error(`Weather service error: ${response.status}`)
         }
         
         const data = await response.json()
@@ -182,8 +181,7 @@ export const getWeatherForecast = async (city, countryCode = '') => {
         clearTimeout(timeoutId)
         
         if (!response.ok) {
-          const errorText = await response.text()
-          throw new Error(`Weather API error: ${response.status} - ${errorText}`)
+          throw new Error(`Weather service error: ${response.status}`)
         }
         
         const data = await response.json()
@@ -221,8 +219,7 @@ export const getWeatherByCoordinates = async (lat, lon) => {
         clearTimeout(timeoutId)
         
         if (!response.ok) {
-          const errorText = await response.text()
-          throw new Error(`Weather API error: ${response.status} - ${errorText}`)
+          throw new Error(`Weather service error: ${response.status}`)
         }
         
         const data = await response.json()

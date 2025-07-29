@@ -47,7 +47,7 @@ export const useFirestore = () => {
       }
       
       return docs
-    } catch (error) {
+    } catch {
       return []
     }
   }

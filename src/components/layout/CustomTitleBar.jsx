@@ -26,7 +26,7 @@ export const CustomTitleBar = () => {
             } else {
               setTitleBarHeight(32) // Default height fallback
             }
-          } catch (error) {
+          } catch {
             setTitleBarHeight(32) // Default height fallback
           }
         }
@@ -39,15 +39,15 @@ export const CustomTitleBar = () => {
           return () => {
             try {
               navigator.windowControlsOverlay.removeEventListener('geometrychange', updateTitleBarGeometry)
-            } catch (error) {
+            } catch {
               // Silent fail
             }
           }
-        } catch (error) {
+        } catch {
           updateTitleBarGeometry() // Still try to get initial geometry
         }
       }
-    } catch (error) {
+    } catch {
       setIsSupported(false)
     }
   }, [])
@@ -57,9 +57,9 @@ export const CustomTitleBar = () => {
       if (window.electronAPI) {
         window.electronAPI.minimize()
       } else {
-
+        // No web fallback for minimize
       }
-    } catch (error) {
+    } catch {
       // Silent fail
     }
   }
@@ -68,22 +68,22 @@ export const CustomTitleBar = () => {
     try {
       if (window.electronAPI) {
         window.electronAPI.maximize()
-      } else {
-        // Fallback for web
-        if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen().catch(error => {
-            // Silent fail
-          })
-        } else {
-          document.exitFullscreen().catch(error => {
-            // Silent fail
-          })
+              } else {
+          // Fallback for web
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {
+              // Silent fail
+            })
+          } else {
+            document.exitFullscreen().catch(() => {
+              // Silent fail
+            })
+          }
         }
+        setIsMaximized(!isMaximized)
+      } catch {
+        // Silent fail
       }
-      setIsMaximized(!isMaximized)
-    } catch (error) {
-      // Silent fail
-    }
   }
 
   const handleClose = () => {
@@ -94,7 +94,7 @@ export const CustomTitleBar = () => {
         // Fallback for web
         window.close()
       }
-    } catch (error) {
+    } catch {
       // Silent fail
     }
   }

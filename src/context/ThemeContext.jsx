@@ -5,7 +5,7 @@ import { useLocalStorage } from '../hooks/useLocalStorage'
 const ThemeContext = createContext(null)
 
 export const ThemeProvider = ({ children }) => {
-  const { user } = useAuth()
+  // Removed unused variable: user
   const [theme, setTheme] = useLocalStorage('theme', 'light')
   const [mounted, setMounted] = useState(false)
 

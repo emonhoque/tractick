@@ -239,12 +239,12 @@
     <!-- Error Tracking -->
     <script>
       window.addEventListener('error', function(e) {
-        console.error('Global error:', e.error);
+        console.error('Global error occurred');
         // Send to error tracking service silently
       });
       
       window.addEventListener('unhandledrejection', function(e) {
-        console.error('Unhandled promise rejection:', e.reason);
+        console.error('Unhandled promise rejection occurred');
         // Send to error tracking service silently
       });
       

@@ -40,13 +40,13 @@ export const AuthProvider = ({ children }) => {
               photoURL: user.photoURL || '',
               lastLogin: new Date().toISOString()
             }, { merge: true })
-          } catch (err) {
+          } catch {
             // Silently handle user document update errors
             setError('Failed to update user profile')
           }
         }
       })
-    } catch (err) {
+    } catch {
       setFirebaseAvailable(false)
       setLoading(false)
       setError('Firebase configuration error')

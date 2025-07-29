@@ -26,7 +26,7 @@ self.addEventListener('install', (event) => {
       .then(() => {
         return self.skipWaiting();
       })
-      .catch((error) => {
+      .catch(() => {
         // Error caching static files
       })
   );
@@ -157,7 +157,7 @@ async function doBackgroundSync() {
     // You can add specific sync logic here
     // For example, syncing timer data, user preferences, etc.
     
-  } catch (error) {
+  } catch {
           // Background sync failed
   }
 }
@@ -221,10 +221,10 @@ self.addEventListener('message', (event) => {
 });
 
 // Error handling
-self.addEventListener('error', (event) => {
+self.addEventListener('error', () => {
       // Service Worker error
 });
 
-self.addEventListener('unhandledrejection', (event) => {
+self.addEventListener('unhandledrejection', () => {
       // Unhandled promise rejection
 }); 

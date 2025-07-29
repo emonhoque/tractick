@@ -5,7 +5,7 @@ import { useAuth } from './AuthContext'
 const WeatherContext = createContext(null)
 
 export const WeatherProvider = ({ children }) => {
-  const { user } = useAuth()
+  // Removed unused variable: user
   const [weatherCache, setWeatherCache] = useState(new Map())
   const [forecastCache, setForecastCache] = useState(new Map())
   const [loadingStates, setLoadingStates] = useState(new Map())
@@ -299,7 +299,7 @@ export const WeatherProvider = ({ children }) => {
       pendingRequests: pendingRequests.current.size,
       failedRequests: failedRequests.current.size
     }
-  }, [weatherCache.size, forecastCache.size, loadingStates.size, errorStates.size, failedRequests.current.size])
+  }, [weatherCache.size, forecastCache.size, loadingStates.size, errorStates.size])
 
   // Clean up expired cache entries periodically
   useEffect(() => {

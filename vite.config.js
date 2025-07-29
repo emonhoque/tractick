@@ -4,8 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
-  const isProduction = mode === 'production'
+  const env = loadEnv(mode, '', '')
+  // Removed unused variable: isProduction
   
   return {
     plugins: [

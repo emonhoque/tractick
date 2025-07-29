@@ -29,7 +29,7 @@ export function useProtocolHandler(onTimerSet) {
     // Handle world clock parameters
     if (route === '/world-clock' && params?.timezone) {
       // You can add timezone handling here if needed
-              // Navigating to world clock with timezone
+      // Navigating to world clock with timezone
     }
   }, [navigate, onTimerSet])
 

@@ -47,7 +47,7 @@ export const useDragAndDrop = (items, onReorder) => {
         })
         
         await batch.commit()
-      } catch (error) {
+      } catch {
         // Revert to original order on error
         return
       }

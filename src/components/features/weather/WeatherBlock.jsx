@@ -40,7 +40,7 @@ export const WeatherBlock = ({ clocks = [] }) => {
     
     try {
       await fetchWeatherForLocations(clocksToShow, false, forceRefresh)
-    } catch (err) {
+    } catch {
       // Silent fail
     }
   }, [clocksToShow, fetchWeatherForLocations])
@@ -79,9 +79,7 @@ export const WeatherBlock = ({ clocks = [] }) => {
     fetchWeatherForClocks(true) // Force refresh
   }
 
-  const handleClearCache = () => {
-    clearCache()
-  }
+  // Removed unused function: handleClearCache
 
   // Show proper message if no clocks are available
   if (!clocks || clocks.length === 0) {
@@ -161,13 +159,13 @@ export const WeatherBlock = ({ clocks = [] }) => {
         </div>
         
         <div className="space-y-4">
-          {clocksToShow.map((clock, index) => {
+          {clocksToShow.map((clock) => {
             // Get weather data from global cache
             // Use place name for weather lookup since geometry might not be available
             const locationKey = clock.geometry?.location ? clock.geometry.location : clock.place
             const weather = getWeatherData(locationKey, clock.country)
             const loading = isLoading(locationKey, clock.country)
-            const error = getError(locationKey, clock.country)
+            // Removed unused variable: error
             
             // If loading, show loading state
             if (loading) {

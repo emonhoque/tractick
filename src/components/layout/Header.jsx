@@ -39,7 +39,7 @@ export const Header = ({ onAuthModalOpen }) => {
   
   // Refs for hover timeout management
   const hoverTimeoutRef = useRef(null)
-  const dropdownRefs = useRef({})
+  // Removed unused variable: dropdownRefs
 
   // Clear any existing timeout
   const clearHoverTimeout = useCallback(() => {
