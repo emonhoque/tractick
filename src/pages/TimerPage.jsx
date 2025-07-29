@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from '../context/AuthContext'
-import { useActiveTimer } from '../context/ActiveTimerContext'
+import { useState, useEffect, useCallback } from 'react'
+import { useAuth } from '../hooks/useAuth'
+import { useActiveTimer } from '../hooks/useActiveTimer'
 import { TimerDisplay } from '../components/features/timer/TimerDisplay'
 import { TimerInput } from '../components/features/timer/TimerInput'
 import { TimerControls } from '../components/features/timer/TimerControls'
@@ -24,7 +24,7 @@ export const TimerPage = ({ initialDuration = null }) => {
     if (initialDuration && !activeTimer) {
       handleTimeSet(initialDuration)
     }
-  }, [initialDuration, activeTimer])
+  }, [initialDuration, activeTimer, handleTimeSet])
 
   // Handle timer completion
   useEffect(() => {
@@ -49,10 +49,10 @@ export const TimerPage = ({ initialDuration = null }) => {
     }
   }, [])
 
-  const handleTimeSet = (duration) => {
+  const handleTimeSet = useCallback((duration) => {
     startTimer(duration, duration)
     setShowInput(false)
-  }
+  }, [startTimer])
 
   const handleStart = () => {
     if (activeTimer) {

@@ -1,11 +1,12 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-import { useAuth } from './AuthContext'
+import { createContext, useEffect, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
 const ThemeContext = createContext(null)
 
+export { ThemeContext }
+
 export const ThemeProvider = ({ children }) => {
-  const { user } = useAuth()
+  // Removed unused variable: user
   const [theme, setTheme] = useLocalStorage('theme', 'light')
   const [mounted, setMounted] = useState(false)
 
@@ -42,10 +43,4 @@ export const ThemeProvider = ({ children }) => {
   )
 }
 
-export const useTheme = () => {
-  const context = useContext(ThemeContext)
-  if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider')
-  }
-  return context
-} 
+ 

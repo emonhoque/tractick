@@ -1,5 +1,7 @@
 // Enhanced Timezone Service using Google's Time Zone API
 import { API_KEYS } from '../constants'
+import { TIMEZONE_DATABASE, TimezoneDatabase } from './timezoneDatabase'
+
 
 // Cache for API responses to reduce rate limiting
 const apiCache = new Map()
@@ -9,36 +11,20 @@ const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 let lastApiCall = 0
 const MIN_API_INTERVAL = 1000 // 1 second between API calls
 
-// Network status tracking
-let isGoogleApiAvailable = true
-let consecutiveFailures = 0
-const MAX_FAILURES = 3
 
-// Retry configuration
-const MAX_RETRIES = 2
-const RETRY_DELAY = 1000 // 1 second
-
-// Helper function to get the appropriate API base URL
-const getGoogleApiUrl = (endpoint) => {
-  return `https://maps.googleapis.com/maps/api${endpoint}`
-}
 
 export class TimezoneService {
-  // Check if Google Time Zone API is available
-  static async checkApiAvailability() {
-    if (!isGoogleApiAvailable) return false
-    
-    // Check if we have a Google API key
-    if (!API_KEYS.GOOGLE_MAPS) {
-      return false
-    }
-    
-    return true
-  }
+
+
 
   // Get timezone data from coordinates using Google Time Zone API
   static async getTimezoneFromCoordinates(lat, lng, timestamp = null) {
     try {
+      // Check if API key is available
+      if (!API_KEYS.GOOGLE_MAPS) {
+        return null
+      }
+      
       // Use current timestamp if not provided
       const currentTimestamp = timestamp || Math.floor(Date.now() / 1000)
       
@@ -57,64 +43,113 @@ export class TimezoneService {
       }
       lastApiCall = now
       
-      for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-        try {
-          const controller = new AbortController()
-          const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
-          
-          const url = getGoogleApiUrl(`/timezone/json?location=${lat},${lng}&timestamp=${currentTimestamp}&key=${API_KEYS.GOOGLE_MAPS}`)
-          
-          const response = await fetch(url, {
-            signal: controller.signal,
-            headers: {
-              'Accept': 'application/json'
-            }
-          })
-          
-          clearTimeout(timeoutId)
-          
-          if (!response.ok) {
-            throw new Error(`Google Time Zone API error: ${response.status}`)
+      // Try direct API call first
+      try {
+        const encodedLocation = encodeURIComponent(`${lat},${lng}`)
+        const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${encodedLocation}&timestamp=${currentTimestamp}&key=${API_KEYS.GOOGLE_MAPS}`
+        
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
           }
-          
-          const data = await response.json()
-          
-          if (data.status === 'OK') {
-            const timezoneData = {
-              timezone: data.timeZoneId,
-              raw_offset: data.rawOffset,
-              utc_offset: this.formatUTCOffset(data.rawOffset),
-              abbreviation: this.getTimezoneAbbreviation(data.timeZoneId),
-              dst_offset: data.dstOffset,
-              timezone_name: data.timeZoneName,
-              dst: data.dstOffset !== 0,
-              lastUpdated: new Date(),
-              dataSource: 'google_timezone_api'
-            }
-            
-            // Cache the response
-            apiCache.set(cacheKey, {
-              data: timezoneData,
-              timestamp: Date.now()
-            })
-            
-            return timezoneData
-          } else {
-            throw new Error(`Google Time Zone API error: ${data.status}`)
+        })
+        
+        if (!response.ok) {
+          return null
+        }
+        
+        const data = await response.json()
+        
+        // If we get REQUEST_DENIED or any error, return null silently
+        if (data.status !== 'OK') {
+          return null
+        }
+        
+        // If we get a successful response, process it
+        const timezoneData = {
+          timezone: data.timeZoneId,
+          raw_offset: data.rawOffset,
+          utc_offset: this.formatUTCOffset(data.rawOffset),
+          abbreviation: this.getTimezoneAbbreviation(data.timeZoneId),
+          dst_offset: data.dstOffset,
+          timezone_name: data.timeZoneName,
+          dst: data.dstOffset !== 0,
+          lastUpdated: new Date()
+        }
+        
+        // Cache the response
+        apiCache.set(cacheKey, {
+          data: timezoneData,
+          timestamp: Date.now()
+        })
+        
+        return timezoneData
+        
+      } catch {
+        // API failed, try fallback database
+        return this.getFallbackTimezoneFromCoordinates(lat, lng)
+      }
+    } catch {
+      // Try fallback database
+      return this.getFallbackTimezoneFromCoordinates(lat, lng)
+    }
+  }
+
+  // Fallback method using timezone database
+  static getFallbackTimezoneFromCoordinates(lat, lng) {
+    try {
+      // Estimate timezone from coordinates using the database
+      const estimatedTimezone = TimezoneDatabase.estimateTimezoneFromCoordinates(lat, lng)
+      
+      if (estimatedTimezone) {
+        const timezoneInfo = TIMEZONE_DATABASE[estimatedTimezone]
+        if (timezoneInfo) {
+          return {
+            timezone: estimatedTimezone,
+            raw_offset: timezoneInfo.offset,
+            utc_offset: timezoneInfo.offsetFormatted,
+            abbreviation: timezoneInfo.abbreviation,
+            timezone_name: timezoneInfo.name,
+            dst: timezoneInfo.dst,
+            lastUpdated: new Date()
           }
-        } catch (error) {
-          if (attempt < MAX_RETRIES) {
-            await new Promise(resolve => setTimeout(resolve, RETRY_DELAY))
-            continue
-          }
-          
-          // Return cached data if available
-          return cached?.data || null
         }
       }
       
       return null
-    } catch (error) {
+    } catch {
+      return null
+    }
+  }
+
+  // Get timezone by city name using fallback database
+  static getTimezoneByCityName(cityName) {
+    try {
+      if (!cityName) return null
+      
+      // Search for the city in the timezone database
+      const searchResults = TimezoneDatabase.searchTimezones(cityName)
+      
+      if (searchResults && searchResults.length > 0) {
+        const bestMatch = searchResults[0]
+        const timezoneInfo = TIMEZONE_DATABASE[bestMatch.timezone]
+        
+        if (timezoneInfo) {
+          return {
+            timezone: bestMatch.timezone,
+            raw_offset: timezoneInfo.offset,
+            utc_offset: timezoneInfo.offsetFormatted,
+            abbreviation: timezoneInfo.abbreviation,
+            timezone_name: timezoneInfo.name,
+            dst: timezoneInfo.dst,
+            lastUpdated: new Date()
+          }
+        }
+      }
+      
+      return null
+    } catch {
       return null
     }
   }
@@ -157,8 +192,8 @@ export class TimezoneService {
       // For city names, we'll need to geocode first (handled by Google Places API)
       // This is better handled in the AddClockModalEnhanced component
       throw new Error('Location format not supported. Use coordinates or city search.')
-    } catch (error) {
-      throw error
+    } catch {
+      throw new Error('Timezone lookup failed')
     }
   }
 
@@ -177,7 +212,7 @@ export class TimezoneService {
         minute: '2-digit',
         second: '2-digit'
       })
-    } catch (error) {
+    } catch {
       return 'Invalid timezone'
     }
   }
@@ -196,48 +231,49 @@ export class TimezoneService {
         month: 'short',
         day: 'numeric'
       })
-    } catch (error) {
+    } catch {
       return 'Invalid timezone'
     }
   }
 
   // Get timezone offset for a timezone (local calculation)
-  static getTimezoneOffset(timezone) {
+  static getTimezoneOffset(timezone, date = null) {
     try {
       // Handle null or undefined timezone
       if (!timezone) {
         return 0
       }
 
-      const now = new Date()
-      const utc = new Date(now.getTime() + (now.getTimezoneOffset() * 60000))
-      const targetTime = new Date(utc.toLocaleString('en-US', { timeZone: timezone }))
-      const offset = (targetTime.getTime() - utc.getTime()) / 1000
-      return offset
-    } catch (error) {
+      // Use provided date or current date
+      const targetDate = date || new Date()
+      
+      // Use a more direct approach to calculate timezone offset
+      const utcTime = targetDate.getTime()
+      const targetTime = new Date(targetDate.toLocaleString('en-US', { timeZone: timezone }))
+      const offsetMs = targetTime.getTime() - utcTime
+      
+      return Math.round(offsetMs / 1000) // Convert to seconds
+    } catch {
       return 0
     }
   }
 
-  // Get timezone abbreviation (local calculation)
+  // Get timezone abbreviation
   static getTimezoneAbbreviation(timezone) {
+    if (!timezone) return 'UTC'
+    
     try {
-      // Handle null or undefined timezone
-      if (!timezone) {
-        return 'UTC'
-      }
-
       const date = new Date()
-      const options = { timeZone: timezone, timeZoneName: 'short' }
-      const timeString = date.toLocaleString('en-US', options)
+      const options = { timeZoneName: 'short' }
+      const timeString = date.toLocaleString('en-US', { timeZone: timezone, ...options })
       const match = timeString.match(/\s([A-Z]{3,4})\s*$/)
-      return match ? match[1] : null
-    } catch (error) {
-      return null
+      return match ? match[1] : 'UTC'
+    } catch {
+      return 'UTC'
     }
   }
 
-  // Check if DST is currently active for a timezone
+  // Check if DST is active for a timezone
   static isDSTActive(timezone) {
     try {
       // Handle null or undefined timezone
@@ -246,61 +282,79 @@ export class TimezoneService {
       }
 
       const now = new Date()
+      
+      // Get offsets for January and July in the target timezone
       const jan = new Date(now.getFullYear(), 0, 1)
       const jul = new Date(now.getFullYear(), 6, 1)
       
-      const janOffset = jan.getTimezoneOffset()
-      const julOffset = jul.getTimezoneOffset()
+      const janOffset = this.getTimezoneOffset(timezone, jan)
+      const julOffset = this.getTimezoneOffset(timezone, jul)
+      const currentOffset = this.getTimezoneOffset(timezone, now)
       
-      // If the timezone has different offsets in January and July, it observes DST
-      return janOffset !== julOffset
-    } catch (error) {
+      // DST is active if current offset is greater than the minimum offset
+      return currentOffset > Math.min(janOffset, julOffset)
+    } catch {
       return false
     }
   }
 
-  // Get effective offset considering DST
+  // Get effective offset for a timezone (including DST)
   static getEffectiveOffset(timezone, baseOffset = null) {
     try {
       // Handle null or undefined timezone
       if (!timezone) {
-        return baseOffset || 0
+        return 0
       }
 
-      if (baseOffset !== null && this.isDSTActive(timezone)) {
-        // Add 1 hour for DST if it's active
-        return baseOffset + 3600
-      }
-      return baseOffset || this.getTimezoneOffset(timezone)
-    } catch (error) {
+      const offset = this.getTimezoneOffset(timezone)
+      const isDST = this.isDSTActive(timezone)
+      
+      // If DST is active, add 1 hour (3600 seconds)
+      return isDST ? offset + 3600 : offset
+    } catch {
       return baseOffset || 0
     }
   }
 
-  // Fallback time data when API is unavailable
+  // Get fallback time data for a timezone
   static getFallbackTimeData(timezone) {
-    // Handle null or undefined timezone
-    if (!timezone) {
-      timezone = 'UTC'
-    }
+    try {
+      // Handle null or undefined timezone
+      if (!timezone) {
+        return {
+          time: 'Invalid timezone',
+          date: 'Invalid timezone',
+          offset: 0,
+          abbreviation: 'UTC',
+          isDST: false
+        }
+      }
 
-    const offset = this.getTimezoneOffset(timezone)
-    const abbreviation = this.getTimezoneAbbreviation(timezone)
-    
-    return {
-      timezone: timezone,
-      raw_offset: offset,
-      utc_offset: this.formatUTCOffset(offset),
-      abbreviation: abbreviation,
-      country_name: this.extractCountry(timezone),
-      dst: this.isDSTActive(timezone),
-      dst_from: null,
-      dst_until: null,
-      dst_offset: this.getEffectiveOffset(timezone, offset)
+      const time = this.getCurrentTime(timezone)
+      const date = this.getCurrentDate(timezone)
+      const offset = this.getTimezoneOffset(timezone)
+      const abbreviation = this.getTimezoneAbbreviation(timezone)
+      const isDST = this.isDSTActive(timezone)
+
+      return {
+        time,
+        date,
+        offset,
+        abbreviation,
+        isDST
+      }
+    } catch {
+      return {
+        time: 'Error',
+        date: 'Error',
+        offset: 0,
+        abbreviation: 'UTC',
+        isDST: false
+      }
     }
   }
 
-  // Extract city name from timezone string
+  // Extract city name from timezone
   static extractCityName(timezone) {
     // Handle null or undefined timezone
     if (!timezone) {
@@ -314,7 +368,7 @@ export class TimezoneService {
     return timezone
   }
 
-  // Extract country from timezone string
+  // Extract country from timezone
   static extractCountry(timezone) {
     // Handle null or undefined timezone
     if (!timezone) {
@@ -383,14 +437,12 @@ export class TimezoneService {
       const [hour, minute, second] = timePart.split(':')
       
       return new Date(year, month - 1, day, hour, minute, second)
-    } catch (error) {
+    } catch {
       return sourceTime
     }
   }
 
-  // Reset API availability
-  static resetApiAvailability() {
-    isGoogleApiAvailable = true
-    consecutiveFailures = 0
-  }
+
+
+
 } 

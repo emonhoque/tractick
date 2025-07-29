@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Plus, Clock, Edit3, Check, X, ArrowRight, Globe } from 'lucide-react'
 import { Button } from '../components/ui/Button'
-import { useAuth } from '../context/AuthContext'
-import { useEditMode } from '../context/EditModeContext'
+import { useAuth } from '../hooks/useAuth'
+import { useEditMode } from '../hooks/useEditMode'
 import { useFirestoreCollection } from '../hooks/useFirestore'
 import { useDragAndDrop } from '../hooks/useDragAndDrop'
 import { WorldClockCard } from '../components/features/clocks/WorldClockCard'
@@ -45,7 +45,6 @@ export const WorldClockPage = () => {
 
   const {
     draggedIndex,
-    dragOverIndex,
     handleDragStart,
     handleDragOver,
     handleDrop,
@@ -65,7 +64,7 @@ export const WorldClockPage = () => {
       await deleteDoc(doc(db, `users/${user.uid}/clocks/${selectedClock.id}`))
       setShowDeleteModal(false)
       setSelectedClock(null)
-    } catch (error) {
+    } catch {
       // Handle error silently
     } finally {
       setDeleteLoading(false)
@@ -192,6 +191,7 @@ export const WorldClockPage = () => {
                 clock={clock}
                 onEdit={handleEditClock}
                 onDelete={handleDeleteClock}
+                showMenuButton={true}
               />
             )
           ))}

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
-import { useAuth } from '../context/AuthContext'
-import { doc, updateDoc, writeBatch } from 'firebase/firestore'
+import { useAuth } from './useAuth'
+import { doc, writeBatch } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 
 export const useDragAndDrop = (items, onReorder) => {
@@ -47,7 +47,7 @@ export const useDragAndDrop = (items, onReorder) => {
         })
         
         await batch.commit()
-      } catch (error) {
+      } catch {
         // Revert to original order on error
         return
       }

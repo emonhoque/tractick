@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { ArrowLeft, Copy, Clock, Globe } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card, CardContent } from '../components/ui/Card'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import { useFirestoreCollection } from '../hooks/useFirestore'
-import { useTimeFormat } from '../context/TimeFormatContext'
+
 import { TimezoneService } from '../utils/timezone'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,22 +12,9 @@ export const TimeConverterPage = () => {
   const navigate = useNavigate()
   const { user, firebaseAvailable } = useAuth()
   const { data: clocks, loading } = useFirestoreCollection('clocks', 'order', 'asc')
-  const { use24Hour } = useTimeFormat()
   const [selectedTime, setSelectedTime] = useState(new Date())
-  const [isDragging, setIsDragging] = useState(false)
   const [showCopyNotification, setShowCopyNotification] = useState(false)
   const sliderRef = useRef(null)
-  const [isMobile, setIsMobile] = useState(false)
-
-  // Check if mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   // Handle slider change with 15-minute snapping
   const handleSliderChange = (e) => {
@@ -39,8 +26,6 @@ export const TimeConverterPage = () => {
 
   // Handle slider mouse up with snapping to 15-minute intervals
   const handleSliderMouseUp = () => {
-    setIsDragging(false)
-    
     // Snap to nearest 15-minute interval
     const currentMinutes = selectedTime.getHours() * 60 + selectedTime.getMinutes()
     const snappedMinutes = Math.round(currentMinutes / 15) * 15
@@ -51,11 +36,6 @@ export const TimeConverterPage = () => {
     const snappedTime = new Date()
     snappedTime.setHours(Math.floor(finalMinutes / 60), finalMinutes % 60, 0, 0)
     setSelectedTime(snappedTime)
-  }
-
-  // Handle slider mouse down
-  const handleSliderMouseDown = () => {
-    setIsDragging(true)
   }
 
   // Format time for display
@@ -114,7 +94,7 @@ export const TimeConverterPage = () => {
         isNextDay: convertedDate > currentDate,
         isPreviousDay: convertedDate < currentDate
       }
-    } catch (error) {
+    } catch {
       return null
     }
   }
@@ -268,9 +248,7 @@ export const TimeConverterPage = () => {
                   max="1439"
                   value={sliderValue}
                   onChange={handleSliderChange}
-                  onMouseDown={handleSliderMouseDown}
                   onMouseUp={handleSliderMouseUp}
-                  onTouchStart={handleSliderMouseDown}
                   onTouchEnd={handleSliderMouseUp}
                   className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
                   style={{

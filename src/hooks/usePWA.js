@@ -18,7 +18,7 @@ export function usePWA() {
 
         setIsPWA(isStandalone)
         setIsLoading(false)
-      } catch (error) {
+      } catch {
         setIsPWA(false)
         setIsLoading(false)
       }

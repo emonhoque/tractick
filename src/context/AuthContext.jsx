@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import {
   onAuthStateChanged,
   signInWithPopup,
@@ -11,6 +11,8 @@ import { doc, setDoc } from 'firebase/firestore'
 import { auth, db } from '../lib/firebase'
 
 const AuthContext = createContext(null)
+
+export { AuthContext }
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
@@ -40,13 +42,13 @@ export const AuthProvider = ({ children }) => {
               photoURL: user.photoURL || '',
               lastLogin: new Date().toISOString()
             }, { merge: true })
-          } catch (err) {
+          } catch {
             // Silently handle user document update errors
             setError('Failed to update user profile')
           }
         }
       })
-    } catch (err) {
+    } catch {
       setFirebaseAvailable(false)
       setLoading(false)
       setError('Firebase configuration error')
@@ -143,10 +145,4 @@ export const AuthProvider = ({ children }) => {
   )
 }
 
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
-} 
+ 

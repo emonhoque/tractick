@@ -9,7 +9,7 @@ export const loadGoogleMapsAPI = () => {
     }
 
     const script = document.createElement('script')
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEYS.GOOGLE_MAPS}&libraries=places`
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEYS.GOOGLE_MAPS}&libraries=places,geometry`
     script.async = true
     script.defer = true
     
@@ -45,7 +45,7 @@ export const searchPlaces = async (query) => {
     )
     
     if (!response.ok) {
-      throw new Error(`Places API (New) request failed: ${response.status}`)
+              throw new Error(`Location service error: ${response.status}`)
     }
     
     const data = await response.json()
@@ -65,9 +65,9 @@ export const searchPlaces = async (query) => {
     } else {
       return []
     }
-      } catch (error) {
-      throw error
-    }
+  } catch {
+    throw new Error('Location service error')
+  }
 }
 
 // Places API (New) - Get Place Details
@@ -84,7 +84,7 @@ export const getPlaceDetails = async (placeId) => {
     )
     
     if (!response.ok) {
-      throw new Error(`Places API (New) details request failed: ${response.status}`)
+              throw new Error(`Location service error: ${response.status}`)
     }
     
     const data = await response.json()
@@ -101,67 +101,88 @@ export const getPlaceDetails = async (placeId) => {
       } : null,
       types: data.types || []
     }
-      } catch (error) {
-      throw error
-    }
+  } catch {
+    throw new Error('Location service error')
+  }
 }
 
-// Places API (New) - Autocomplete with improved error handling
+// Enhanced Places API search with better error handling
 export const searchPlacesAutocomplete = async (query) => {
   try {
     // Check if we're in a browser environment
     if (typeof window === 'undefined') {
-      throw new Error('Not in browser environment')
+      return []
     }
 
     // Check if API key is available
     if (!API_KEYS.GOOGLE_MAPS) {
-      throw new Error('Google Maps API key not configured')
-    }
-
-    const response = await fetch(
-      `https://places.googleapis.com/v1/places:searchText`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Goog-Api-Key': API_KEYS.GOOGLE_MAPS,
-          'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.types'
-        },
-        body: JSON.stringify({
-          textQuery: query,
-          maxResultCount: 5
-        })
-      }
-    )
-    
-    if (!response.ok) {
-      const errorText = await response.text()
-              // Places API error
-      throw new Error(`Places API (New) autocomplete request failed: ${response.status}`)
-    }
-    
-    const data = await response.json()
-    
-    if (data.places) {
-      // Return simplified results without additional API calls to avoid rate limiting
-      return data.places.map(place => ({
-        place_id: place.id,
-        name: place.displayName?.text || 'Unknown',
-        formatted_address: place.formattedAddress || 'Unknown',
-        geometry: place.location ? {
-          location: {
-            lat: place.location.latitude,
-            lng: place.location.longitude
-          }
-        } : null
-      }))
-    } else {
       return []
     }
-      } catch (error) {
-      throw error
+
+    // Try multiple search strategies for better city results
+    const searchStrategies = [
+      `${query} city`,
+      `${query}`,
+      `city of ${query}`,
+      `${query} municipality`
+    ]
+
+    let allResults = []
+
+    for (const searchQuery of searchStrategies) {
+      try {
+        const response = await fetch(
+          `https://places.googleapis.com/v1/places:searchText`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Goog-Api-Key': API_KEYS.GOOGLE_MAPS,
+              'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.types'
+            },
+            body: JSON.stringify({
+              textQuery: searchQuery,
+              maxResultCount: 5
+            })
+          }
+        )
+        
+        if (!response.ok) {
+          continue // Try next strategy
+        }
+        
+        const data = await response.json()
+        
+        if (data.places && data.places.length > 0) {
+          const results = data.places.map(place => ({
+            place_id: place.id,
+            name: place.displayName?.text || 'Unknown',
+            formatted_address: place.formattedAddress || 'Unknown',
+            types: place.types || [],
+            geometry: place.location ? {
+              location: {
+                lat: place.location.latitude,
+                lng: place.location.longitude
+              }
+            } : null
+          }))
+          allResults.push(...results)
+        }
+      } catch {
+        continue // Try next strategy
+      }
     }
+    
+    // Remove duplicates based on place_id and return unique results
+    const uniqueResults = allResults.filter((place, index, self) => 
+      index === self.findIndex(p => p.place_id === place.place_id)
+    )
+    
+    return uniqueResults.slice(0, 10) // Return max 10 results
+  } catch {
+    // Return empty array instead of throwing error
+    return []
+  }
 }
 
 // Legacy fallback for backward compatibility
@@ -169,12 +190,25 @@ export const searchPlacesLegacy = async (query) => {
   try {
     const baseUrl = 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json'
     
-    const url = `${baseUrl}?input=${encodeURIComponent(query)}&inputtype=textquery&fields=place_id,name,formatted_address,geometry&key=${API_KEYS.GOOGLE_MAPS}`
+    // Try direct API first
+    let url = `${baseUrl}?input=${encodeURIComponent(query + ' city')}&inputtype=textquery&fields=place_id,name,formatted_address,geometry&key=${API_KEYS.GOOGLE_MAPS}`
     
-    const response = await fetch(url)
+    let response
+    try {
+      response = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+    } catch {
+      // If CORS fails, return empty results instead of trying proxy
+      return []
+    }
     
     if (!response.ok) {
-      throw new Error('Google Places API request failed')
+      return []
     }
     
     const data = await response.json()
@@ -189,11 +223,11 @@ export const searchPlacesLegacy = async (query) => {
     } else if (data.status === 'ZERO_RESULTS') {
       return []
     } else {
-      throw new Error(`Google Places API error: ${data.status}`)
+      return []
     }
-      } catch (error) {
-      throw error
-    }
+  } catch {
+    return []
+  }
 }
 
 // Alternative search using Google Maps JavaScript API (no CORS issues)
@@ -204,31 +238,39 @@ export const searchPlacesWithJSAPI = async (query) => {
       await loadGoogleMapsAPI()
     }
 
-    return new Promise((resolve, reject) => {
-      const service = new window.google.maps.places.PlacesService(document.createElement('div'))
-      
-      const request = {
-        query: query,
-        fields: ['place_id', 'name', 'formatted_address', 'geometry']
-      }
-      
-      service.findPlaceFromQuery(request, (results, status) => {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-          const places = results.map(place => ({
-            place_id: place.place_id,
-            name: place.name,
-            formatted_address: place.formatted_address,
-            geometry: place.geometry
-          }))
-          resolve(places)
-        } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-          resolve([])
-        } else {
-          reject(new Error(`Google Places JS API error: ${status}`))
+    return new Promise((resolve) => {
+      try {
+        const service = new window.google.maps.places.PlacesService(document.createElement('div'))
+        
+        const request = {
+          query: `${query} city`,
+          fields: ['place_id', 'name', 'formatted_address', 'geometry', 'types']
         }
-      })
+        
+        service.findPlaceFromQuery(request, (results, status) => {
+          if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
+            const places = results.map(place => ({
+              place_id: place.place_id,
+              name: place.name,
+              formatted_address: place.formatted_address,
+              geometry: place.geometry,
+              types: place.types
+            }))
+            resolve(places)
+          } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+            resolve([])
+          } else {
+            // Silently fail instead of throwing error
+            resolve([])
+          }
+        })
+      } catch {
+        // Silently fail instead of throwing error
+        resolve([])
+      }
     })
-      } catch (error) {
-      throw error
-    }
+  } catch {
+    // Return empty array instead of throwing error
+    return []
+  }
 } 

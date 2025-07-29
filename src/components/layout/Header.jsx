@@ -1,8 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, Sun, Moon, User, LogOut, ChevronDown, Clock, Globe, Cloud, Download } from 'lucide-react'
-import { useAuth } from '../../context/AuthContext'
-import { useTheme } from '../../context/ThemeContext'
+import { useAuth } from '../../hooks/useAuth'
+import { useTheme } from '../../hooks/useTheme'
 import { Button } from '../ui/Button'
 import { PWAInstallPrompt } from '../common/PWAInstallPrompt'
 import { ROUTES } from '../../constants'
@@ -39,7 +39,7 @@ export const Header = ({ onAuthModalOpen }) => {
   
   // Refs for hover timeout management
   const hoverTimeoutRef = useRef(null)
-  const dropdownRefs = useRef({})
+  // Removed unused variable: dropdownRefs
 
   // Clear any existing timeout
   const clearHoverTimeout = useCallback(() => {
@@ -147,10 +147,8 @@ export const Header = ({ onAuthModalOpen }) => {
           <Link to={ROUTES.HOME} className="-m-1.5 p-1.5 flex items-center justify-start w-[160px] h-14">
             <img 
               src={theme === 'dark' ? '/assets/header-logo-2-dark.webp' : '/assets/header-logo-2-light.webp'} 
-              alt="TrakTick" 
-              className="h-12 w-auto object-contain max-w-full header-logo"
-              width="160"
-              height="48"
+              alt="tractick" 
+              className="h-12 w-auto object-contain max-w-full"
             />
           </Link>
         </div>
@@ -335,10 +333,8 @@ export const Header = ({ onAuthModalOpen }) => {
               <Link to={ROUTES.HOME} className="-m-1.5 p-1.5 flex items-center justify-start w-[120px] h-8">
                 <img 
                   src={theme === 'dark' ? '/assets/header-logo-2-dark.webp' : '/assets/header-logo-2-light.webp'} 
-                  alt="TrakTick" 
-                  className="h-8 w-auto object-contain max-w-full header-logo-mobile"
-                  width="120"
-                  height="32"
+                  alt="tractick" 
+                  className="h-8 w-auto object-contain max-w-full"
                 />
               </Link>
               <Button

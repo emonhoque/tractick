@@ -29,7 +29,7 @@ export function useProtocolHandler(onTimerSet) {
     // Handle world clock parameters
     if (route === '/world-clock' && params?.timezone) {
       // You can add timezone handling here if needed
-              // Navigating to world clock with timezone
+      // Navigating to world clock with timezone
     }
   }, [navigate, onTimerSet])
 
@@ -56,7 +56,7 @@ export function useProtocolHandler(onTimerSet) {
     }
 
     // Listen for protocol launches (for when app is already running)
-    const handleBeforeUnload = (event) => {
+    const handleBeforeUnload = () => {
       // This is a fallback for when the app is already running
       // The main protocol handling happens in the manifest
     }

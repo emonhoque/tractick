@@ -1,11 +1,12 @@
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
+import { createContext, useState, useEffect, useCallback, useRef } from 'react'
 import { getCurrentWeather, getWeatherForecast, getWeatherByCoordinates } from '../utils/weather'
-import { useAuth } from './AuthContext'
 
 const WeatherContext = createContext(null)
 
+export { WeatherContext }
+
 export const WeatherProvider = ({ children }) => {
-  const { user } = useAuth()
+  // Removed unused variable: user
   const [weatherCache, setWeatherCache] = useState(new Map())
   const [forecastCache, setForecastCache] = useState(new Map())
   const [loadingStates, setLoadingStates] = useState(new Map())
@@ -39,6 +40,10 @@ export const WeatherProvider = ({ children }) => {
   // Check if cache is valid
   const isCacheValid = useCallback((timestamp, type = 'current') => {
     const now = Date.now()
+    const CACHE_DURATION = {
+      current: 60 * 60 * 1000, // 1 hour
+      forecast: 3 * 60 * 60 * 1000 // 3 hours
+    }
     const duration = CACHE_DURATION[type] || CACHE_DURATION.current
     return (now - timestamp) < duration
   }, [])
@@ -48,7 +53,7 @@ export const WeatherProvider = ({ children }) => {
     const failedTime = failedRequests.current.get(cacheKey)
     if (!failedTime) return false
     return (Date.now() - failedTime) < ERROR_CACHE_DURATION
-  }, [])
+  }, [ERROR_CACHE_DURATION])
 
   // Mark a request as failed
   const markRequestFailed = useCallback((cacheKey) => {
@@ -69,7 +74,7 @@ export const WeatherProvider = ({ children }) => {
     }
     
     return timeSinceLastFetch >= MIN_FETCH_INTERVAL
-  }, [hasRecentlyFailed])
+  }, [hasRecentlyFailed, MIN_FETCH_INTERVAL])
 
   // Get or create pending request
   const getOrCreateRequest = useCallback((cacheKey, fetchFunction) => {
@@ -224,7 +229,8 @@ export const WeatherProvider = ({ children }) => {
   const fetchWeatherForLocations = useCallback(async (locations, includeForecast = false, forceRefresh = false) => {
     const promises = locations.map(async (location) => {
       const { place, country, geometry } = location
-      const locationKey = geometry?.location ? geometry.location : { lat: place, lng: country }
+      // Use place name for weather lookup since geometry might not be available
+      const locationKey = geometry?.location ? geometry.location : place
       
       try {
         const currentWeather = await fetchCurrentWeather(locationKey, country, forceRefresh)
@@ -298,13 +304,11 @@ export const WeatherProvider = ({ children }) => {
       pendingRequests: pendingRequests.current.size,
       failedRequests: failedRequests.current.size
     }
-  }, [weatherCache.size, forecastCache.size, loadingStates.size, errorStates.size, failedRequests.current.size])
+  }, [weatherCache.size, forecastCache.size, loadingStates.size, errorStates.size])
 
   // Clean up expired cache entries periodically
   useEffect(() => {
     const cleanupInterval = setInterval(() => {
-      const now = Date.now()
-      
       // Clean current weather cache
       setWeatherCache(prev => {
         const newCache = new Map()
@@ -382,10 +386,4 @@ export const WeatherProvider = ({ children }) => {
   )
 }
 
-export const useWeather = () => {
-  const context = useContext(WeatherContext)
-  if (!context) {
-    throw new Error('useWeather must be used within a WeatherProvider')
-  }
-  return context
-} 
+ 

@@ -74,6 +74,7 @@ export const DraggableClockCard = ({
           clock={clock}
           onEdit={onEdit}
           onDelete={onDelete}
+          showMenuButton={true}
         />
       </div>
     </div>

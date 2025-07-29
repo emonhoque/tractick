@@ -1,6 +1,8 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useState } from 'react'
 
 const EditModeContext = createContext(null)
+
+export { EditModeContext }
 
 export const EditModeProvider = ({ children }) => {
   const [isEditMode, setIsEditMode] = useState(false)
@@ -32,10 +34,4 @@ export const EditModeProvider = ({ children }) => {
   )
 }
 
-export const useEditMode = () => {
-  const context = useContext(EditModeContext)
-  if (!context) {
-    throw new Error('useEditMode must be used within an EditModeProvider')
-  }
-  return context
-} 
+ 

@@ -1,7 +1,7 @@
-// Service Worker for TrakTick PWA
-const CACHE_NAME = 'traktick-v1.0.0';
-const STATIC_CACHE = 'traktick-static-v1.0.0';
-const DYNAMIC_CACHE = 'traktick-dynamic-v1.0.0';
+// Service Worker for tractick PWA
+const CACHE_NAME = 'tractick-v1.0.0';
+const STATIC_CACHE = 'tractick-static-v1.0.0';
+const DYNAMIC_CACHE = 'tractick-dynamic-v1.0.0';
 
 // Files to cache immediately
 const STATIC_FILES = [
@@ -26,7 +26,7 @@ self.addEventListener('install', (event) => {
       .then(() => {
         return self.skipWaiting();
       })
-      .catch((error) => {
+      .catch(() => {
         // Error caching static files
       })
   );
@@ -64,8 +64,12 @@ self.addEventListener('fetch', (event) => {
   // Skip external requests (except for essential APIs)
   if (!url.origin.includes(self.location.origin) && 
       !url.hostname.includes('firestore.googleapis.com') &&
-      !url.hostname.includes('api.openweathermap.org') &&
-      !url.hostname.includes('maps.googleapis.com')) {
+      !url.hostname.includes('api.openweathermap.org')) {
+    return;
+  }
+  
+  // Skip Google Maps API requests to avoid CORS issues
+  if (url.hostname.includes('maps.googleapis.com')) {
     return;
   }
   
@@ -124,18 +128,14 @@ async function cacheFirst(request) {
     return cachedResponse;
   }
   
-  try {
-    const networkResponse = await fetch(request);
-    
-    if (networkResponse.ok) {
-      const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, networkResponse.clone());
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    throw error;
+  const networkResponse = await fetch(request);
+  
+  if (networkResponse.ok) {
+    const cache = await caches.open(DYNAMIC_CACHE);
+    cache.put(request, networkResponse.clone());
   }
+  
+  return networkResponse;
 }
 
 // Background sync for offline actions
@@ -153,7 +153,7 @@ async function doBackgroundSync() {
     // You can add specific sync logic here
     // For example, syncing timer data, user preferences, etc.
     
-  } catch (error) {
+  } catch {
           // Background sync failed
   }
 }
@@ -161,7 +161,7 @@ async function doBackgroundSync() {
 // Push notification handling
 self.addEventListener('push', (event) => {
   const options = {
-    body: event.data ? event.data.text() : 'New notification from TrakTick',
+    body: event.data ? event.data.text() : 'New notification from tractick',
     icon: '/assets/android/android-launchericon-192-192.webp',
     badge: '/assets/android/android-launchericon-96-96.webp',
     vibrate: [100, 50, 100],
@@ -184,7 +184,7 @@ self.addEventListener('push', (event) => {
   };
   
   event.waitUntil(
-    self.registration.showNotification('TrakTick', options)
+    self.registration.showNotification('tractick', options)
   );
 });
 
@@ -194,7 +194,7 @@ self.addEventListener('notificationclick', (event) => {
   
   if (event.action === 'explore') {
     event.waitUntil(
-      clients.openWindow('/')
+      self.clients.openWindow('/')
     );
   }
 });
@@ -217,10 +217,10 @@ self.addEventListener('message', (event) => {
 });
 
 // Error handling
-self.addEventListener('error', (event) => {
+self.addEventListener('error', () => {
       // Service Worker error
 });
 
-self.addEventListener('unhandledrejection', (event) => {
+self.addEventListener('unhandledrejection', () => {
       // Unhandled promise rejection
 }); 

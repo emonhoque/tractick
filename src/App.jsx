@@ -1,4 +1,3 @@
-// src/App.jsx
 import { Routes, Route } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
 import { AuthProvider } from './context/AuthContext'

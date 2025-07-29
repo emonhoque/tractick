@@ -18,7 +18,7 @@ export const usePageTitle = () => {
 
   useEffect(() => {
     const pageName = PAGE_TITLES[location.pathname] || 'Home'
-    const title = pageName === 'Home' ? 'traktick - time zones made simple' : `${pageName} | traktick`
+    const title = pageName === 'Home' ? 'tractick - time zones made simple' : `${pageName} | tractick`
     
     document.title = title
     

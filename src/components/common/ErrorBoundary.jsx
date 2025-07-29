@@ -8,11 +8,13 @@ class ErrorBoundary extends React.Component {
     this.state = { hasError: false, error: null, errorInfo: null }
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     return { hasError: true }
   }
 
   componentDidCatch(error, errorInfo) {
+    // Log generic error for debugging (no sensitive data)
+    console.error('Error caught by boundary - Component:', errorInfo.componentStack?.split('\n')[1]?.trim() || 'Unknown component');
     this.setState({
       error: error,
       errorInfo: errorInfo
@@ -56,7 +58,7 @@ class ErrorBoundary extends React.Component {
                 </Button>
               </div>
 
-              {/* Remove development error details, keep only the message and email */}
+
             </div>
           </div>
         </div>

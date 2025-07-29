@@ -290,14 +290,14 @@ function setupAndroidStatusBar() {
  */
 function setupAndroidBackButton() {
   // Handle Android back button
-  window.addEventListener('popstate', (event) => {
+  window.addEventListener('popstate', () => {
     // Custom back button handling if needed
             // Back button pressed
   });
   
   // Add back button support for navigation
   if ('navigation' in window) {
-    window.navigation.addEventListener('navigate', (event) => {
+    window.navigation.addEventListener('navigate', () => {
       // Handle navigation events
     });
   }

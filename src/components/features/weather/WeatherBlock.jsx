@@ -1,23 +1,21 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { Card, CardContent } from '../../ui/Card'
 import { Button } from '../../ui/Button'
-import { useUserPreferences } from '../../../hooks/useUserPreferences'
+
 import { useApiKeys } from '../../../hooks/useApiKeys'
-import { useWeather } from '../../../context/WeatherContext'
+import { useWeather } from '../../../hooks/useWeather'
 import { WeatherSettingsModal } from './WeatherSettingsModal'
 import { MapPin, Settings, Database, RefreshCw } from 'lucide-react'
 
 export const WeatherBlock = ({ clocks = [] }) => {
   const [showSettings, setShowSettings] = useState(false)
-  const { preferences } = useUserPreferences()
+  // Removed unused preferences variable
   const { isOpenWeatherAvailable } = useApiKeys()
   const { 
     fetchWeatherForLocations, 
     getCacheStats, 
-    clearCache,
     getWeatherData,
-    isLoading,
-    getError
+    isLoading
   } = useWeather()
   const { failedRequests } = getCacheStats()
 
@@ -25,16 +23,10 @@ export const WeatherBlock = ({ clocks = [] }) => {
   const clocksToShow = useMemo(() => {
     if (!clocks || clocks.length === 0) return []
     
-    if (preferences.weatherLocations && preferences.weatherLocations.length > 0) {
-      // Filter clocks based on user preferences
-      return clocks.filter(clock => 
-        preferences.weatherLocations.includes(clock.id)
-      ).slice(0, 2) // Still limit to 2 for display
-    } else {
-      // Default to first 2 clocks if no preferences set
-      return clocks.slice(0, 2)
-    }
-  }, [clocks, preferences.weatherLocations])
+    // Always show first 2 clocks for weather display
+    const defaultClocks = clocks.slice(0, 2)
+    return defaultClocks
+  }, [clocks])
 
   // Use a ref to store the current clocksToShow to avoid dependency issues
   const clocksToShowRef = useRef(clocksToShow)
@@ -46,8 +38,8 @@ export const WeatherBlock = ({ clocks = [] }) => {
     
     try {
       await fetchWeatherForLocations(clocksToShow, false, forceRefresh)
-    } catch (err) {
-      
+    } catch {
+      // Silent fail
     }
   }, [clocksToShow, fetchWeatherForLocations])
 
@@ -85,39 +77,9 @@ export const WeatherBlock = ({ clocks = [] }) => {
     fetchWeatherForClocks(true) // Force refresh
   }
 
-  const handleClearCache = () => {
-    clearCache()
-  }
+  // Removed unused function: handleClearCache
 
-  // Show loading state if no clocks are available
-  if (clocksToShow.length === 0) {
-    return (
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Weather</h3>
-          <div className="space-y-4">
-            {/* Skeleton loader with fixed dimensions */}
-            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg weather-skeleton">
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-3">
-                <div className="w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
-                <div className="w-24 h-4 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
-                  <div>
-                    <div className="w-16 h-6 bg-gray-300 dark:bg-gray-600 rounded animate-pulse mb-1"></div>
-                    <div className="w-20 h-4 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
-
+  // Show proper message if no clocks are available
   if (!clocks || clocks.length === 0) {
     return (
       <Card>
@@ -127,6 +89,31 @@ export const WeatherBlock = ({ clocks = [] }) => {
             <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-500 dark:text-gray-400">No locations available</p>
             <p className="text-sm text-gray-400 dark:text-gray-500">Add world clocks to see weather</p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Show loading state if no clocks are selected for weather display
+  if (clocksToShow.length === 0 && clocks && clocks.length > 0) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Weather</h3>
+          <div className="text-center py-8">
+            <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+            <p className="text-gray-500 dark:text-gray-400">No weather locations selected</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500">Configure weather settings to display weather data</p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSettings(true)}
+              className="mt-3"
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Configure Weather
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -170,12 +157,13 @@ export const WeatherBlock = ({ clocks = [] }) => {
         </div>
         
         <div className="space-y-4">
-          {clocksToShow.map((clock, index) => {
+          {clocksToShow.map((clock) => {
             // Get weather data from global cache
-            const locationKey = clock.geometry?.location ? clock.geometry.location : { lat: clock.place, lng: clock.country }
+            // Use place name for weather lookup since geometry might not be available
+            const locationKey = clock.geometry?.location ? clock.geometry.location : clock.place
             const weather = getWeatherData(locationKey, clock.country)
             const loading = isLoading(locationKey, clock.country)
-            const error = getError(locationKey, clock.country)
+            // Removed unused variable: error
             
             // If loading, show loading state
             if (loading) {

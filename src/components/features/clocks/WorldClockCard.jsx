@@ -3,10 +3,10 @@ import { MoreVertical, Edit, Trash2, MapPin } from 'lucide-react'
 import { Card, CardContent } from '../../ui/Card'
 import { Button } from '../../ui/Button'
 import { TimezoneService } from '../../../utils/timezone'
-import { useTimeFormat } from '../../../context/TimeFormatContext'
+import { useTimeFormat } from '../../../hooks/useTimeFormat'
 import { WeatherDisplay } from '../weather/WeatherDisplay'
 
-export const WorldClockCard = ({ clock, onEdit, onDelete }) => {
+export const WorldClockCard = ({ clock, onEdit, onDelete, showMenuButton = false }) => {
   const [currentTime, setCurrentTime] = useState('')
   const [currentDate, setCurrentDate] = useState('')
   const [showMenu, setShowMenu] = useState(false)
@@ -28,7 +28,7 @@ export const WorldClockCard = ({ clock, onEdit, onDelete }) => {
         
         setCurrentTime(time)
         setCurrentDate(date)
-      } catch (err) {
+      } catch {
         // Fallback to current time if timezone is invalid
         setCurrentTime(new Date().toLocaleTimeString('en-US', { 
           hour12: !use24Hour, 
@@ -92,7 +92,7 @@ export const WorldClockCard = ({ clock, onEdit, onDelete }) => {
       }
       const offset = TimezoneService.getTimezoneOffset(clock.timezoneId)
       return TimezoneService.formatOffset(offset)
-    } catch (error) {
+    } catch {
       return null
     }
   }
@@ -104,7 +104,7 @@ export const WorldClockCard = ({ clock, onEdit, onDelete }) => {
       
       <CardContent className="p-0 relative flex flex-col h-full">
         {/* Header with location and menu */}
-        <div className="flex justify-between items-start p-6 pb-4">
+        <div className="flex justify-between items-start p-6 pb-4 relative z-10">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <div className="w-2 h-2 bg-gradient-to-r from-[#b91c1c] to-[#991b1b] rounded-full"></div>
@@ -124,42 +124,44 @@ export const WorldClockCard = ({ clock, onEdit, onDelete }) => {
             </div>
           </div>
           
-          <div className="relative">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowMenu(!showMenu)}
-              className="opacity-0 group-hover:opacity-100 transition-all duration-200 dropdown-button hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full p-2"
-              aria-label="Open clock menu"
-            >
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-            
-            {showMenu && (
-                              <div className="absolute right-0 mt-2 w-36 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-sm rounded-xl shadow-xl border border-gray-200/50 dark:border-gray-800/50 z-10 dropdown-menu">
-                <button
-                  onClick={() => {
-                    onEdit?.(clock)
-                    setShowMenu(false)
-                  }}
-                  className="flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-lg mx-1 my-1"
-                >
-                  <Edit className="h-4 w-4 mr-3" />
-                  Edit
-                </button>
-                <button
-                  onClick={() => {
-                    onDelete?.(clock)
-                    setShowMenu(false)
-                  }}
-                  className="flex items-center w-full px-4 py-3 text-sm text-[#b91c1c] hover:bg-[#fef2f2] dark:hover:bg-[#450a0a] transition-colors rounded-lg mx-1 my-1"
-                >
-                  <Trash2 className="h-4 w-4 mr-3" />
-                  Delete
-                </button>
-              </div>
-            )}
-          </div>
+                    {showMenuButton && (
+            <div className="relative z-20">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowMenu(!showMenu)}
+                className="opacity-100 transition-all duration-200 dropdown-button hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full p-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 shadow-sm"
+                aria-label="Open clock menu"
+              >
+                <MoreVertical className="h-4 w-4 text-gray-700 dark:text-gray-200" />
+              </Button>
+              
+              {showMenu && (
+                <div className="absolute right-0 mt-2 w-36 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-sm rounded-xl shadow-xl border border-gray-200/50 dark:border-gray-800/50 z-10 dropdown-menu">
+                  <button
+                    onClick={() => {
+                      onEdit?.(clock)
+                      setShowMenu(false)
+                    }}
+                    className="flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-lg mx-1 my-1"
+                  >
+                    <Edit className="h-4 w-4 mr-3" />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => {
+                      onDelete?.(clock)
+                      setShowMenu(false)
+                    }}
+                    className="flex items-center w-full px-4 py-3 text-sm text-[#b91c1c] hover:bg-[#fef2f2] dark:hover:bg-[#450a0a] transition-colors rounded-lg mx-1 my-1"
+                  >
+                    <Trash2 className="h-4 w-4 mr-3" />
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Time display section */}

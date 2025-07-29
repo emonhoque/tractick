@@ -1,6 +1,6 @@
-# Contributing to TrakTick
+# Contributing to tractick
 
-Thank you for your interest in contributing to TrakTick! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to tractick! This document provides guidelines and information for contributors.
 
 ## 🤝 How to Contribute
 
@@ -87,8 +87,8 @@ Any other relevant information.
 1. **Fork the repository**
 2. **Clone your fork:**
    ```bash
-   git clone https://github.com/yourusername/traktick.git
-   cd traktick
+   git clone https://github.com/yourusername/tractick.git
+   cd tractick
    ```
 
 3. **Install dependencies:**
@@ -298,8 +298,8 @@ Contributors will be recognized in:
 
 ## 📄 License
 
-By contributing to TrakTick, you agree that your contributions will be licensed under the MIT License.
+By contributing to tractick, you agree that your contributions will be licensed under the MIT License.
 
 ---
 
-Thank you for contributing to TrakTick! 🕐 
+Thank you for contributing to tractick! 🕐 

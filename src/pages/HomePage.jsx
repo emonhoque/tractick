@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import { useFirestore } from '../hooks/useFirestore'
-import { useTimeFormat } from '../context/TimeFormatContext'
+import { useTimeFormat } from '../hooks/useTimeFormat'
 import { Card, CardContent } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { ActiveTimerIndicator } from '../components/features/ActiveTimerIndicator'
@@ -10,8 +10,7 @@ import { WorldClockCard } from '../components/features/clocks/WorldClockCard'
 import { WeatherBlock } from '../components/features/weather/WeatherBlock'
 import { RecentActivityBlock } from '../components/features/RecentActivityBlock'
 import { ROUTES } from '../constants'
-import { formatDuration } from '../utils/time'
-import { formatTimerDisplay } from '../utils/timer'
+
 import { 
   Clock, 
   Timer, 
@@ -40,7 +39,7 @@ export const HomePage = ({ onAuthModalOpen }) => {
           ])
           setClocks(clocksData || [])
           setRecentSessions(sessionsData || [])
-            } catch (error) {
+            } catch {
       // Silent fail
     }
       }
@@ -101,43 +100,13 @@ export const HomePage = ({ onAuthModalOpen }) => {
     }
   ]
 
-  const getSessionLabel = (session) => {
-    if (session.type === 'timer') {
-      return 'Timer Session'
-    }
-    return 'Stopwatch Session'
-  }
 
-  const getSessionDuration = (session) => {
-    if (session.type === 'timer' && session.elapsedTime !== null && session.originalDuration) {
-      return formatTimerDisplay(session.elapsedTime, session.originalDuration)
-    }
-    return formatDuration(session.duration || 0)
-  }
-
-  const isTimerCompleted = (session) => {
-    if (session.type !== 'timer') return false
-    
-    // If the completed flag is explicitly set to true, it's completed
-    if (session.completed === true) return true
-    
-    // If we have elapsed time and original duration, check if they match
-    if (session.elapsedTime !== null && session.originalDuration) {
-      const elapsed = Number(session.elapsedTime)
-      const original = Number(session.originalDuration)
-      // Consider it completed if elapsed time is very close to or equal to original duration
-      return Math.abs(elapsed - original) <= 1 // Allow 1 second tolerance
-    }
-    
-    // Fallback to the original completed flag
-    return session.completed === true
-  }
 
   if (!user || !firebaseAvailable) {
     return (
       <div className="text-center py-12">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-          {!firebaseAvailable ? 'Firebase not configured' : 'Welcome to TrakTick'}
+          {!firebaseAvailable ? 'Firebase not configured' : 'Welcome to tractick'}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
           {!firebaseAvailable ? 'Please configure Firebase to use this feature.' : 'Please sign in to access your time tracking dashboard.'}
@@ -258,7 +227,7 @@ export const HomePage = ({ onAuthModalOpen }) => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {clocks.slice(0, 3).map((clock) => (
-              <WorldClockCard key={clock.id} clock={clock} />
+              <WorldClockCard key={clock.id} clock={clock} showMenuButton={false} />
             ))}
           </div>
         </section>

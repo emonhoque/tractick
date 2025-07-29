@@ -3,14 +3,14 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // Users can only access their own user document and subcollections
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null 
         && request.auth.uid == userId 
         && validateUserData(request.resource.data);
 
       // World clocks: strict validation with comprehensive timezone data
       match /clocks/{clockId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read, write, delete: if request.auth != null && request.auth.uid == userId;
         allow create, update: if request.auth != null
           && request.auth.uid == userId
           && validateClockData(request.resource.data);
@@ -18,7 +18,7 @@ service cloud.firestore {
 
       // Timer/stopwatch sessions: only owner can read/write with validation
       match /sessions/{sessionId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read, write, delete: if request.auth != null && request.auth.uid == userId;
         allow create, update: if request.auth != null
           && request.auth.uid == userId
           && validateSessionData(request.resource.data);
@@ -26,7 +26,7 @@ service cloud.firestore {
 
       // User preferences: only owner can read/write with validation
       match /preferences/{prefId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read, write, delete: if request.auth != null && request.auth.uid == userId;
         allow create, update: if request.auth != null
           && request.auth.uid == userId
           && validatePreferencesData(request.resource.data);

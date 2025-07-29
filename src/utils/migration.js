@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, updateDoc, writeBatch } from 'firebase/firestore'
+import { collection, getDocs, doc, writeBatch } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 
 export const migrateClockOrder = async (userId) => {
@@ -30,7 +30,7 @@ export const migrateClockOrder = async (userId) => {
     })
 
     await batch.commit()
-  } catch (error) {
+  } catch {
     // Migration failed silently
   }
 } 

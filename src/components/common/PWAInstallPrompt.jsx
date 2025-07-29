@@ -7,7 +7,7 @@ export const PWAInstallPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false)
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [isInstalled, setIsInstalled] = useState(false)
-  const { isAndroid, isWindows, isIOS, isStandalone, platformUtils } = usePlatform()
+  const { isAndroid, isWindows, isIOS, isStandalone } = usePlatform()
 
   useEffect(() => {
     // Check if already installed
@@ -78,7 +78,7 @@ export const PWAInstallPrompt = () => {
       
       setDeferredPrompt(null)
       setShowPrompt(false)
-    } catch (error) {
+    } catch {
       // Fallback to platform-specific instructions
       if (isIOS) {
         showIOSInstructions()

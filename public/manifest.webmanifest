@@ -1,6 +1,6 @@
 {
-  "name": "traktick - time zones made simple",
-  "short_name": "traktick",
+  "name": "tractick - time zones made simple",
+  "short_name": "tractick",
   "description": "A straightforward clock app designed to help you keep track of time with ease.",
   "start_url": "/",
   "display": "standalone",
@@ -13,7 +13,7 @@
   "categories": ["productivity", "utilities"],
   "protocol_handlers": [
     {
-      "protocol": "web+traktick",
+      "protocol": "web+tractick",
       "url": "/?protocol=%s"
     }
   ],
@@ -253,14 +253,14 @@
       "sizes": "1280x720",
       "type": "image/webp",
       "form_factor": "wide",
-      "label": "Desktop view of traktick time app"
+      "label": "Desktop view of tractick time app"
     },
     {
       "src": "/assets/screenshot-mobile.webp",
       "sizes": "390x844",
       "type": "image/webp",
       "form_factor": "narrow",
-      "label": "Mobile view of traktick time app"
+      "label": "Mobile view of tractick time app"
     }
   ],
   "shortcuts": [

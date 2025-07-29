@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 export const useLocalStorage = (key, initialValue) => {
   const [storedValue, setStoredValue] = useState(() => {
@@ -11,11 +11,11 @@ export const useLocalStorage = (key, initialValue) => {
       // Try to parse as JSON, but fall back to string if it fails
       try {
         return JSON.parse(item)
-      } catch (parseError) {
+      } catch {
         // If JSON parsing fails, return the raw string value
         return item
       }
-    } catch (error) {
+    } catch {
       return initialValue
     }
   })
@@ -31,7 +31,7 @@ export const useLocalStorage = (key, initialValue) => {
       } else {
         window.localStorage.setItem(key, String(valueToStore))
       }
-    } catch (error) {
+    } catch {
       // Silent fail
     }
   }

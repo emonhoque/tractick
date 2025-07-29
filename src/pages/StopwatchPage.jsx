@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from '../context/AuthContext'
-import { useActiveTimer } from '../context/ActiveTimerContext'
+import React from 'react'
+import { useAuth } from '../hooks/useAuth'
+import { useActiveTimer } from '../hooks/useActiveTimer'
 import { StopwatchDisplay } from '../components/features/stopwatch/StopwatchDisplay'
 import { StopwatchControls } from '../components/features/stopwatch/StopwatchControls'
 import { LapsList } from '../components/features/stopwatch/LapsList'
@@ -12,7 +12,6 @@ export const StopwatchPage = () => {
     stopwatchLaps,
     startStopwatch, 
     pauseStopwatch, 
-    resumeStopwatch, 
     stopStopwatch,
     addLap
   } = useActiveTimer()
