@@ -184,7 +184,7 @@ export const WeatherBlock = ({ clocks = [] }) => {
             // If no weather data for this clock, show a placeholder
             if (!weather) {
               return (
-                <div key={clock.id} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                <div key={clock.id} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg weather-card">
                   {/* Location */}
                   <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-3">
                     <MapPin className="h-4 w-4" />
@@ -227,7 +227,7 @@ export const WeatherBlock = ({ clocks = [] }) => {
             const windSpeed = Math.round(weather.wind.speed)
 
             return (
-              <div key={clock.id} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+              <div key={clock.id} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg weather-card">
                 {/* Location */}
                 <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-3">
                   <MapPin className="h-4 w-4" />
