@@ -3,7 +3,7 @@ import { MoreVertical, Edit, Trash2, MapPin } from 'lucide-react'
 import { Card, CardContent } from '../../ui/Card'
 import { Button } from '../../ui/Button'
 import { TimezoneService } from '../../../utils/timezone'
-import { useTimeFormat } from '../../../context/TimeFormatContext'
+import { useTimeFormat } from '../../../hooks/useTimeFormat'
 import { WeatherDisplay } from '../weather/WeatherDisplay'
 
 export const WorldClockCard = ({ clock, onEdit, onDelete, showMenuButton = false }) => {
@@ -28,7 +28,7 @@ export const WorldClockCard = ({ clock, onEdit, onDelete, showMenuButton = false
         
         setCurrentTime(time)
         setCurrentDate(date)
-      } catch (err) {
+      } catch {
         // Fallback to current time if timezone is invalid
         setCurrentTime(new Date().toLocaleTimeString('en-US', { 
           hour12: !use24Hour, 
@@ -92,7 +92,7 @@ export const WorldClockCard = ({ clock, onEdit, onDelete, showMenuButton = false
       }
       const offset = TimezoneService.getTimezoneOffset(clock.timezoneId)
       return TimezoneService.formatOffset(offset)
-    } catch (error) {
+    } catch {
       return null
     }
   }

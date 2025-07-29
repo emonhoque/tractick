@@ -23,7 +23,7 @@ const loadCacheFromStorage = () => {
         }
       })
     }
-  } catch (error) {
+  } catch {
     // Silent fail in production
   }
 }
@@ -36,7 +36,7 @@ const saveCacheToStorage = () => {
       cacheObject[key] = value
     })
     localStorage.setItem('weatherCache', JSON.stringify(cacheObject))
-  } catch (error) {
+  } catch {
     // Silent fail in production
   }
 }
@@ -157,8 +157,8 @@ export const getCurrentWeather = async (city, countryCode = '') => {
         throw fetchError
       }
     })
-  } catch (error) {
-    throw error
+  } catch {
+    throw new Error('Weather service error')
   }
 }
 
@@ -195,8 +195,8 @@ export const getWeatherForecast = async (city, countryCode = '') => {
         throw fetchError
       }
     })
-  } catch (error) {
-    throw error
+  } catch {
+    throw new Error('Weather service error')
   }
 }
 
@@ -233,8 +233,8 @@ export const getWeatherByCoordinates = async (lat, lon) => {
         throw fetchError
       }
     })
-  } catch (error) {
-    throw error
+  } catch {
+    throw new Error('Weather service error')
   }
 }
 

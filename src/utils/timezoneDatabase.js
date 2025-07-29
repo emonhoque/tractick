@@ -276,7 +276,6 @@ export class TimezoneDatabase {
         // Calculate relevance score for better sorting
         let score = 0
         const cityName = info.name.toLowerCase()
-        const countryName = info.country.toLowerCase()
         
         // Prioritize exact matches
         if (cityName === searchTerm) score += 100

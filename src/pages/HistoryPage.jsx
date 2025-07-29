@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react'
-import { useAuth } from '../context/AuthContext'
-import { useTimeFormat } from '../context/TimeFormatContext'
+import { useState, useMemo } from 'react'
+import { useAuth } from '../hooks/useAuth'
+import { useTimeFormat } from '../hooks/useTimeFormat'
 import { useFirestoreCollection } from '../hooks/useFirestore'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
@@ -123,7 +123,7 @@ export const HistoryPage = () => {
       await deleteDoc(doc(db, `users/${user.uid}/sessions/${selectedSession.id}`))
       setShowDeleteModal(false)
       setSelectedSession(null)
-    } catch (error) {
+    } catch {
       // Handle error silently
     } finally {
       setDeleteLoading(false)

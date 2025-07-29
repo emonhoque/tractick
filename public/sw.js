@@ -128,18 +128,14 @@ async function cacheFirst(request) {
     return cachedResponse;
   }
   
-  try {
-    const networkResponse = await fetch(request);
-    
-    if (networkResponse.ok) {
-      const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, networkResponse.clone());
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    throw error;
+  const networkResponse = await fetch(request);
+  
+  if (networkResponse.ok) {
+    const cache = await caches.open(DYNAMIC_CACHE);
+    cache.put(request, networkResponse.clone());
   }
+  
+  return networkResponse;
 }
 
 // Background sync for offline actions
@@ -198,7 +194,7 @@ self.addEventListener('notificationclick', (event) => {
   
   if (event.action === 'explore') {
     event.waitUntil(
-      clients.openWindow('/')
+      self.clients.openWindow('/')
     );
   }
 });

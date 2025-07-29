@@ -17,7 +17,7 @@ export function useTitleBarSpacing() {
                            window.matchMedia('(display-mode: standalone)').matches ||
                            window.matchMedia('(display-mode: window-controls-overlay)').matches
         setIsPWA(isStandalone)
-      } catch (error) {
+      } catch {
         setIsPWA(false)
       }
     }
@@ -39,7 +39,7 @@ export function useTitleBarSpacing() {
             } else {
               setTitleBarHeight(32) // Default height fallback
             }
-          } catch (error) {
+          } catch {
             setTitleBarHeight(32) // Default height fallback
           }
         }
@@ -54,15 +54,15 @@ export function useTitleBarSpacing() {
           return () => {
             try {
               navigator.windowControlsOverlay.removeEventListener('geometrychange', updateTitleBarGeometry)
-            } catch (error) {
+            } catch {
               // Silent fail
             }
           }
-        } catch (error) {
+        } catch {
           updateTitleBarGeometry() // Still try to get initial geometry
         }
       }
-    } catch (error) {
+    } catch {
       setIsSupported(false)
     }
   }, [])

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useTheme } from '../../context/ThemeContext'
+import { useTheme } from '../../hooks/useTheme'
 import { usePWA } from '../../hooks/usePWA'
 import { Button } from '../ui/Button'
 

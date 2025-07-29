@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Modal } from '../../ui/Modal'
 import { Button } from '../../ui/Button'
 import { Input } from '../../ui/Input'
-import { useAuth } from '../../../context/AuthContext'
+import { useAuth } from '../../../hooks/useAuth'
 import { useApiKeys } from '../../../hooks/useApiKeys'
 import { searchPlacesAutocomplete, searchPlacesLegacy, searchPlacesWithJSAPI } from '../../../utils/googleMaps'
 import { TimezoneService } from '../../../utils/timezone'
@@ -117,7 +117,7 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
                 geometry: place.geometry
               }))
             }
-          } catch (newApiError) {
+          } catch {
             
             try {
               // Fallback to JavaScript API (no CORS issues)
@@ -197,7 +197,7 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
                 geometry: place.geometry
               }))
             }
-            } catch (jsApiError) {
+            } catch {
               
               try {
                 // Final fallback to legacy API with CORS proxy
@@ -277,7 +277,7 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
                     geometry: place.geometry
                   }))
                 }
-              } catch (legacyError) {
+              } catch {
                 // All APIs failed, no results
                 results = []
               }
@@ -307,7 +307,7 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
         }
         
         setSearchResults(results.slice(0, 10)) // Limit to 10 results
-      } catch (err) {
+      } catch {
         setError('Search failed. Please try again.')
         setSearchResults([])
       } finally {
@@ -339,7 +339,7 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
           abbreviation: timezoneData?.abbreviation || null,
           timezone_name: timezoneData?.timezone_name || null
         })
-      } catch (error) {
+      } catch {
         // Try fallback by city name
         const fallbackTimezoneData = TimezoneService.getTimezoneByCityName(place.name)
         
@@ -431,7 +431,7 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
       
       // Return null if no timezone data available
       return null
-    } catch (error) {
+    } catch {
       // API failed, return null
       return null
     }
@@ -470,8 +470,8 @@ export const AddClockModalEnhanced = ({ isOpen, onClose }) => {
       setSearchResults([])
       setSelectedCity(null)
       onClose()
-    } catch (err) {
-      setError(err.message || 'Failed to add clock. Please try again.')
+    } catch {
+      setError('Failed to add clock. Please try again.')
     } finally {
       setLoading(false)
     }

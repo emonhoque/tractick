@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useTimeFormat } from '../context/TimeFormatContext'
-import { useAuth } from '../context/AuthContext'
-import { useTheme } from '../context/ThemeContext'
+import { useTimeFormat } from '../hooks/useTimeFormat'
+import { useAuth } from '../hooks/useAuth'
+import { useTheme } from '../hooks/useTheme'
 import { useFirestore } from '../hooks/useFirestore'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { ROUTES } from '../constants'
 import { TimezoneService } from '../utils/timezone'
 import { getWeatherIcon } from '../utils/weather'
-import { useWeather } from '../context/WeatherContext'
+import { useWeather } from '../hooks/useWeather'
 import { useApiKeys } from '../hooks/useApiKeys'
 import { ChevronLeft, ChevronRight, X, Clock, Globe, Settings, Sun, Moon, Maximize2, Minimize2 } from 'lucide-react'
 import { Button } from '../components/ui/Button'
@@ -22,13 +22,9 @@ export const ScreensaverPage = () => {
   const [currentClockIndex, setCurrentClockIndex] = useState(0)
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
-  const [minimalistMode, setMinimalistMode] = useState(false) // Toggle for minimalist mode
-
   const [buttonsVisible, setButtonsVisible] = useState(true)
-  const [lastActivity, setLastActivity] = useState(Date.now())
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [showAllLocations, setShowAllLocations] = useState(false)
-  const [timeFontSize, setTimeFontSize] = useState('text-8xl')
   
   const { use24Hour } = useTimeFormat()
   const { user, firebaseAvailable } = useAuth()
@@ -39,7 +35,6 @@ export const ScreensaverPage = () => {
   const [clocks, setClocks] = useState([])
   
   const inactivityTimeoutRef = useRef(null)
-  const activityTimeoutRef = useRef(null)
   const timeDisplayRef = useRef(null)
   const { 
     fetchWeatherForLocations, 
@@ -65,7 +60,7 @@ export const ScreensaverPage = () => {
         date,
         weather
       }
-    } catch (error) {
+    } catch {
       return null
     }
   }
@@ -81,7 +76,7 @@ export const ScreensaverPage = () => {
         try {
           const clocksData = await getDocuments('clocks', 'order', 'asc')
           setClocks(clocksData || [])
-        } catch (error) {
+        } catch {
           // Silent fail
         }
       }
@@ -113,7 +108,6 @@ export const ScreensaverPage = () => {
   // Auto-hide buttons after 10 seconds of inactivity
   useEffect(() => {
     const resetInactivityTimer = () => {
-      setLastActivity(Date.now())
       setButtonsVisible(true)
       
       if (inactivityTimeoutRef.current) {
@@ -154,7 +148,7 @@ export const ScreensaverPage = () => {
         clearTimeout(inactivityTimeoutRef.current)
       }
     }
-  }, [])
+  }, [handleKeyDown])
 
   useEffect(() => {
     const updateTime = () => {
@@ -180,40 +174,37 @@ export const ScreensaverPage = () => {
     return () => clearInterval(interval)
   }, [])
 
-  const handleExit = (e) => {
-    // Remove the ability to exit by clicking anywhere
-    // Only the explicit exit button should work
-  }
 
-  const handleNext = () => {
+
+  const handleNext = useCallback(() => {
     if (clocks.length > 0) {
       setCurrentClockIndex((prev) => {
         const newIndex = (prev + 1) % clocks.length
         return newIndex
       })
     }
-  }
+  }, [clocks.length])
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (clocks.length > 0) {
       setCurrentClockIndex((prev) => {
         const newIndex = prev === 0 ? clocks.length - 1 : prev - 1
         return newIndex
       })
     }
-  }
+  }, [clocks.length])
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().then(() => {
         setIsFullscreen(true)
-      }).catch(err => {
+      }).catch(() => {
         // Silent fail
       })
     } else {
       document.exitFullscreen().then(() => {
         setIsFullscreen(false)
-      }).catch(err => {
+      }).catch(() => {
         // Silent fail
       })
     }
@@ -222,7 +213,7 @@ export const ScreensaverPage = () => {
 
 
   // Keyboard navigation handler
-  const handleKeyDown = (e) => {
+  const handleKeyDown = useCallback((e) => {
     if (clocks.length === 0) return
 
     switch (e.key) {
@@ -241,7 +232,7 @@ export const ScreensaverPage = () => {
         navigate(ROUTES.HOME)
         break
     }
-  }
+  }, [clocks.length, handlePrevious, handleNext, navigate])
 
   // Touch handlers for swipe gestures
   const handleTouchStart = (e) => {
@@ -293,36 +284,7 @@ export const ScreensaverPage = () => {
 
   const totalClocks = clocks.length
 
-  const calculateFontSize = () => {
-    if (!timeDisplayRef.current) return
 
-    const container = timeDisplayRef.current.parentElement
-    const containerWidth = container.offsetWidth
-    const text = timeDisplayRef.current.textContent || ''
-    
-    // Start with the largest font size and work down
-    const fontSizes = [
-      'text-8xl sm:text-9xl md:text-[10rem] lg:text-[15rem] xl:text-[20rem]',
-      'text-7xl sm:text-8xl md:text-9xl lg:text-[12rem] xl:text-[16rem]',
-      'text-6xl sm:text-7xl md:text-8xl lg:text-10xl xl:text-[14rem]',
-      'text-5xl sm:text-6xl md:text-7xl lg:text-9xl xl:text-[12rem]',
-      'text-4xl sm:text-5xl md:text-6xl lg:text-8xl xl:text-10xl',
-      'text-3xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-9xl',
-      'text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-8xl'
-    ]
-
-    // Test each font size to find the one that fits
-    for (let i = 0; i < fontSizes.length; i++) {
-      const testClass = fontSizes[i]
-      timeDisplayRef.current.className = `font-light tracking-wider leading-none whitespace-nowrap ${theme === 'dark' ? 'text-white' : 'text-black'} drop-shadow-lg ${testClass}`
-      
-      // Check if the text fits within the container
-      if (timeDisplayRef.current.offsetWidth <= containerWidth - 40) { // 40px padding
-        setTimeFontSize(testClass)
-        break
-      }
-    }
-  }
 
 
 

@@ -1,7 +1,7 @@
 import { Timer, TimerOff, Play, Pause, Square, ArrowRight } from 'lucide-react'
 import { Card, CardContent } from '../ui/Card'
 import { Button } from '../ui/Button'
-import { useActiveTimer } from '../../context/ActiveTimerContext'
+import { useActiveTimer } from '../../hooks/useActiveTimer'
 import { formatTime } from '../../utils/time'
 import { formatTimerDisplay } from '../../utils/timer'
 import { Link } from 'react-router-dom'

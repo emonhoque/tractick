@@ -1,23 +1,21 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { Card, CardContent } from '../../ui/Card'
 import { Button } from '../../ui/Button'
-import { useUserPreferences } from '../../../hooks/useUserPreferences'
+
 import { useApiKeys } from '../../../hooks/useApiKeys'
-import { useWeather } from '../../../context/WeatherContext'
+import { useWeather } from '../../../hooks/useWeather'
 import { WeatherSettingsModal } from './WeatherSettingsModal'
 import { MapPin, Settings, Database, RefreshCw } from 'lucide-react'
 
 export const WeatherBlock = ({ clocks = [] }) => {
   const [showSettings, setShowSettings] = useState(false)
-  const { preferences } = useUserPreferences()
+  // Removed unused preferences variable
   const { isOpenWeatherAvailable } = useApiKeys()
   const { 
     fetchWeatherForLocations, 
     getCacheStats, 
-    clearCache,
     getWeatherData,
-    isLoading,
-    getError
+    isLoading
   } = useWeather()
   const { failedRequests } = getCacheStats()
 
@@ -28,7 +26,7 @@ export const WeatherBlock = ({ clocks = [] }) => {
     // Always show first 2 clocks for weather display
     const defaultClocks = clocks.slice(0, 2)
     return defaultClocks
-  }, [clocks, preferences.weatherLocations])
+  }, [clocks])
 
   // Use a ref to store the current clocksToShow to avoid dependency issues
   const clocksToShowRef = useRef(clocksToShow)

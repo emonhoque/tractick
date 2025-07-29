@@ -13,11 +13,6 @@ const MIN_API_INTERVAL = 1000 // 1 second between API calls
 
 
 
-// Helper function to get the appropriate API base URL
-const getGoogleApiUrl = (endpoint) => {
-  return `https://maps.googleapis.com/maps/api${endpoint}`
-}
-
 export class TimezoneService {
 
 
@@ -91,11 +86,11 @@ export class TimezoneService {
         
         return timezoneData
         
-      } catch (fetchError) {
+      } catch {
         // API failed, try fallback database
         return this.getFallbackTimezoneFromCoordinates(lat, lng)
       }
-    } catch (error) {
+    } catch {
       // Try fallback database
       return this.getFallbackTimezoneFromCoordinates(lat, lng)
     }
@@ -123,7 +118,7 @@ export class TimezoneService {
       }
       
       return null
-    } catch (error) {
+    } catch {
       return null
     }
   }
@@ -154,7 +149,7 @@ export class TimezoneService {
       }
       
       return null
-    } catch (error) {
+    } catch {
       return null
     }
   }
@@ -197,8 +192,8 @@ export class TimezoneService {
       // For city names, we'll need to geocode first (handled by Google Places API)
       // This is better handled in the AddClockModalEnhanced component
       throw new Error('Location format not supported. Use coordinates or city search.')
-    } catch (error) {
-      throw error
+    } catch {
+      throw new Error('Timezone lookup failed')
     }
   }
 
@@ -217,7 +212,7 @@ export class TimezoneService {
         minute: '2-digit',
         second: '2-digit'
       })
-    } catch (error) {
+    } catch {
       return 'Invalid timezone'
     }
   }
@@ -236,7 +231,7 @@ export class TimezoneService {
         month: 'short',
         day: 'numeric'
       })
-    } catch (error) {
+    } catch {
       return 'Invalid timezone'
     }
   }
@@ -258,7 +253,7 @@ export class TimezoneService {
       const offsetMs = targetTime.getTime() - utcTime
       
       return Math.round(offsetMs / 1000) // Convert to seconds
-    } catch (error) {
+    } catch {
       return 0
     }
   }
@@ -273,7 +268,7 @@ export class TimezoneService {
       const timeString = date.toLocaleString('en-US', { timeZone: timezone, ...options })
       const match = timeString.match(/\s([A-Z]{3,4})\s*$/)
       return match ? match[1] : 'UTC'
-    } catch (error) {
+    } catch {
       return 'UTC'
     }
   }
@@ -298,7 +293,7 @@ export class TimezoneService {
       
       // DST is active if current offset is greater than the minimum offset
       return currentOffset > Math.min(janOffset, julOffset)
-    } catch (error) {
+    } catch {
       return false
     }
   }
@@ -316,7 +311,7 @@ export class TimezoneService {
       
       // If DST is active, add 1 hour (3600 seconds)
       return isDST ? offset + 3600 : offset
-    } catch (error) {
+    } catch {
       return baseOffset || 0
     }
   }
@@ -348,7 +343,7 @@ export class TimezoneService {
         abbreviation,
         isDST
       }
-    } catch (error) {
+    } catch {
       return {
         time: 'Error',
         date: 'Error',
@@ -442,7 +437,7 @@ export class TimezoneService {
       const [hour, minute, second] = timePart.split(':')
       
       return new Date(year, month - 1, day, hour, minute, second)
-    } catch (error) {
+    } catch {
       return sourceTime
     }
   }

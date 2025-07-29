@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { useAuth } from '../context/AuthContext'
+import { useEffect } from 'react'
+import { useAuth } from '../hooks/useAuth'
 import { useFirestoreCollection } from '../hooks/useFirestore'
 import { useApiKeys } from '../hooks/useApiKeys'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { LoadingSkeleton } from '../components/common/LoadingSpinner'
-import { getWeatherIcon, formatTemperature, formatHumidity, formatWindSpeed } from '../utils/weather'
-import { useWeather } from '../context/WeatherContext'
+import { formatTemperature, formatHumidity, formatWindSpeed } from '../utils/weather'
+import { useWeather } from '../hooks/useWeather'
 import { 
   Cloud, 
   CloudRain, 
@@ -30,7 +30,6 @@ export const WeatherPage = () => {
   const { 
     fetchWeatherForLocations, 
     getWeatherData, 
-    getForecastData,
     isLoading,
     getError 
   } = useWeather()
@@ -187,7 +186,6 @@ export const WeatherPage = () => {
           // Get weather data from global cache
           const locationKey = clock.geometry?.location ? clock.geometry.location : { lat: clock.place, lng: clock.country }
           const weather = getWeatherData(locationKey, clock.country)
-          const forecast = getForecastData(clock.place, clock.country)
           const loading = isLoading(locationKey, clock.country)
           const error = getError(locationKey, clock.country)
           

@@ -30,7 +30,7 @@ export const useUserPreferences = () => {
             weatherLocations: []
           })
         }
-      } catch (error) {
+      } catch {
         setPreferences({
           weatherLocations: []
         })
@@ -53,7 +53,7 @@ export const useUserPreferences = () => {
       await setDoc(userPrefsRef, newPreferences, { merge: true })
       setPreferences(newPreferences)
       return true
-    } catch (error) {
+    } catch {
       return false
     }
   }

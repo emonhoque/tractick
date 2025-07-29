@@ -56,7 +56,7 @@ export function useProtocolHandler(onTimerSet) {
     }
 
     // Listen for protocol launches (for when app is already running)
-    const handleBeforeUnload = (event) => {
+    const handleBeforeUnload = () => {
       // This is a fallback for when the app is already running
       // The main protocol handling happens in the manifest
     }

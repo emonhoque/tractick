@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Cloud, CloudRain, CloudSnow, Sun, Cloudy, Wind } from 'lucide-react'
 import { formatTemperature, formatHumidity, formatWindSpeed } from '../../../utils/weather'
 import { useApiKeys } from '../../../hooks/useApiKeys'
-import { useWeather } from '../../../context/WeatherContext'
+import { useWeather } from '../../../hooks/useWeather'
 
 export const WeatherDisplay = ({ city, country }) => {
   const { isOpenWeatherAvailable } = useApiKeys()

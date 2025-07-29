@@ -64,7 +64,7 @@ export function parseProtocolUrl(protocolUrl) {
       case '':
         return { route: ROUTES.HOME }
         
-      default:
+      default: {
         // Try to parse as a timer duration
         const duration = action
         if (isValidDuration(duration)) {
@@ -74,8 +74,9 @@ export function parseProtocolUrl(protocolUrl) {
           }
         }
         return { route: ROUTES.HOME }
+      }
     }
-  } catch (error) {
+  } catch {
     return { route: ROUTES.HOME }
   }
 }

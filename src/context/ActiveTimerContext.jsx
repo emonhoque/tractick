@@ -1,9 +1,11 @@
-import { createContext, useContext, useState, useEffect, useRef } from 'react'
-import { useAuth } from './AuthContext'
+import { createContext, useState, useEffect, useRef } from 'react'
+import { useAuth } from '../hooks/useAuth'
 import { db } from '../lib/firebase'
 import { collection, addDoc } from 'firebase/firestore'
 
 const ActiveTimerContext = createContext(null)
+
+export { ActiveTimerContext }
 
 export const ActiveTimerProvider = ({ children }) => {
   const { user, firebaseAvailable } = useAuth()
@@ -19,7 +21,7 @@ export const ActiveTimerProvider = ({ children }) => {
   const saveToSessionStorage = (key, data) => {
     try {
       sessionStorage.setItem(key, JSON.stringify(data))
-    } catch (error) {
+    } catch {
       // Silent fail
     }
   }
@@ -28,7 +30,7 @@ export const ActiveTimerProvider = ({ children }) => {
     try {
       const data = sessionStorage.getItem(key)
       return data ? JSON.parse(data) : null
-    } catch (error) {
+    } catch {
       return null
     }
   }
@@ -452,10 +454,4 @@ export const ActiveTimerProvider = ({ children }) => {
   )
 }
 
-export const useActiveTimer = () => {
-  const context = useContext(ActiveTimerContext)
-  if (!context) {
-    throw new Error('useActiveTimer must be used within an ActiveTimerProvider')
-  }
-  return context
-} 
+ 

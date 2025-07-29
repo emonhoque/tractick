@@ -65,8 +65,8 @@ export const searchPlaces = async (query) => {
     } else {
       return []
     }
-  } catch (error) {
-    throw error
+  } catch {
+    throw new Error('Location service error')
   }
 }
 
@@ -101,8 +101,8 @@ export const getPlaceDetails = async (placeId) => {
       } : null,
       types: data.types || []
     }
-  } catch (error) {
-    throw error
+  } catch {
+    throw new Error('Location service error')
   }
 }
 
@@ -168,7 +168,7 @@ export const searchPlacesAutocomplete = async (query) => {
           }))
           allResults.push(...results)
         }
-      } catch (strategyError) {
+      } catch {
         continue // Try next strategy
       }
     }
@@ -179,7 +179,7 @@ export const searchPlacesAutocomplete = async (query) => {
     )
     
     return uniqueResults.slice(0, 10) // Return max 10 results
-  } catch (error) {
+  } catch {
     // Return empty array instead of throwing error
     return []
   }
@@ -202,7 +202,7 @@ export const searchPlacesLegacy = async (query) => {
           'Accept': 'application/json'
         }
       })
-    } catch (corsError) {
+    } catch {
       // If CORS fails, return empty results instead of trying proxy
       return []
     }
@@ -225,7 +225,7 @@ export const searchPlacesLegacy = async (query) => {
     } else {
       return []
     }
-  } catch (error) {
+  } catch {
     return []
   }
 }
@@ -238,7 +238,7 @@ export const searchPlacesWithJSAPI = async (query) => {
       await loadGoogleMapsAPI()
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       try {
         const service = new window.google.maps.places.PlacesService(document.createElement('div'))
         
@@ -264,12 +264,12 @@ export const searchPlacesWithJSAPI = async (query) => {
             resolve([])
           }
         })
-      } catch (error) {
+      } catch {
         // Silently fail instead of throwing error
         resolve([])
       }
     })
-  } catch (error) {
+  } catch {
     // Return empty array instead of throwing error
     return []
   }
