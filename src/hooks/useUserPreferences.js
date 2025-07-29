@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from './useAuth'
 
 export const useUserPreferences = () => {
   const { user, firebaseAvailable } = useAuth()
